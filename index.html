@@ -3,103 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | Global Super App</title>
+    <title>Cervantes | Super App Oficial</title>
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --card: #111; --green: #25d366; --blue: #3498db; }
+        :root { --gold: #d4af37; --bg: #050505; --card: #111; --green: #25d366; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; }
-
-        /* SIDEBAR */
-        .sidebar { width: 250px; background: #000; height: 100vh; position: fixed; border-right: 1px solid #222; overflow-y: auto; }
-        .sidebar-header { padding: 25px; font-size: 1.5rem; font-weight: bold; color: var(--gold); border-bottom: 1px solid #222; text-align: center; }
-        .menu-item { padding: 15px 20px; display: flex; align-items: center; cursor: pointer; color: #bbb; text-decoration: none; border-bottom: 1px solid #080808; }
+        
+        .sidebar { width: 250px; background: #000; height: 100vh; position: fixed; border-right: 1px solid #222; }
+        .sidebar-header { padding: 25px; font-size: 1.5rem; font-weight: bold; color: var(--gold); text-align: center; border-bottom: 1px solid #222; }
+        .menu-item { padding: 15px 20px; display: block; cursor: pointer; color: #bbb; text-decoration: none; border-bottom: 1px solid #080808; }
         .menu-item:hover { background: #111; color: var(--gold); }
-        .menu-item i { margin-right: 12px; font-style: normal; }
 
-        /* CONTEÚDO PRINCIPAL */
-        .main-content { margin-left: 250px; flex-grow: 1; padding: 20px; max-width: 900px; }
-        .section { display: none; background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #222; margin-top: 10px; }
+        .main-content { margin-left: 250px; flex-grow: 1; padding: 20px; }
+        .section { display: none; background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #222; }
         .active { display: block; }
 
-        /* INPUTS E BOTÕES */
-        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
-        .btn-call { background: var(--green); color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .btn-ia { background: var(--gold); color: black; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
-
-        .code-output { background: #000; color: #00ff00; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.9rem; border: 1px solid #00ff0033; white-space: pre-wrap; margin-top: 15px; }
+        textarea, input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 8px; }
+        .btn-ia { background: var(--gold); color: black; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        
+        #responseArea { background: #000; color: #00ff00; padding: 15px; border-radius: 8px; font-family: monospace; margin-top: 15px; white-space: pre-wrap; border: 1px solid #00ff0033; min-height: 50px; }
+        .btn-call { background: var(--green); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-right: 10px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <div class="sidebar-header">CERVANTES</div>
-    <a class="menu-item" onclick="showSec('home')"><i>🏠</i> Feed Global</a>
-    <a class="menu-item" onclick="showSec('chat')"><i>💬</i> Chats e Chamadas</a>
-    <a class="menu-item" onclick="showSec('ia-code')"><i>🤖</i> IA: APK e Web Design</a>
-    <a class="menu-item" onclick="showSec('translate')"><i>🌍</i> Tradutor Oficial Global</a>
-    <a class="menu-item" onclick="location.reload()"><i>💳</i> Upgrade de Plano</a>
+    <a class="menu-item" onclick="showSec('home')">🏠 Início</a>
+    <a class="menu-item" onclick="showSec('chat')">💬 Chats e Chamadas</a>
+    <a class="menu-item" onclick="showSec('ia')">🤖 IA Developer (Real)</a>
 </div>
 
 <div class="main-content">
     
     <div id="home" class="section active">
-        <h1>Conectividade Global</h1>
-        <p>A tua Super App agora fala todas as línguas oficiais do mundo.</p>
-        <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; border-left: 5px solid var(--gold);">
-            <strong>Status do Sistema:</strong> Tradutor Oficial Ativo | Códigos Internacionais Liberados
-        </div>
+        <h1>Cervantes Super App 2026</h1>
+        <p>Sistema Ativo com Gemini AI.</p>
     </div>
 
     <div id="chat" class="section">
-        <h2>Comunicação Internacional</h2>
-        <p>Introduza o código do país seguido do número:</p>
-        <input type="text" placeholder="Ex: +244 (Angola), +351 (Portugal), +1 (EUA)...">
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-call" onclick="alert('Iniciando Vídeo-Chamada Internacional...')">📹 Vídeo Global</button>
-            <button class="btn-call" style="background: var(--blue)" onclick="alert('Chamada de Voz Iniciada...')">📞 Voz</button>
-        </div>
-        <textarea placeholder="Mensagem direta segura..." rows="4"></textarea>
-        <button class="btn-ia" style="background: var(--green); color: white;">Enviar Mensagem</button>
+        <h2>Comunicação em Tempo Real</h2>
+        <input type="text" id="callName" placeholder="Nome da Sala ou Nome do Utilizador">
+        <button class="btn-call" onclick="iniciarChamada()">📹 Iniciar Vídeo Chamada Real</button>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">*Usa o Jitsi Meet para chamadas encriptadas sem limites.</p>
     </div>
 
-    <div id="ia-code" class="section">
-        <h2>IA Cervantes Developer</h2>
-        <textarea id="promptIA" rows="4" placeholder="Descreve o teu site, app ou APK em qualquer língua..."></textarea>
-        <button class="btn-ia" onclick="gerarCodigo()">GERAR CÓDIGO FONTE</button>
-        <div id="resultCode" class="code-output" style="display:none"></div>
-    </div>
-
-    <div id="translate" class="section">
-        <h2>Tradutor Oficial Universal</h2>
-        <p>Selecione a língua de destino:</p>
-        <select id="langSelect">
-            <option value="pt">Português (Oficial)</option>
-            <option value="en">Inglês (United Kingdom / USA)</option>
-            <option value="es">Espanhol (España / América Latina)</option>
-            <option value="fr">Francês (France)</option>
-            <option value="de">Alemão (Deutschland)</option>
-            <option value="zh">Chinês Mandarim (China)</option>
-            <option value="ru">Russo (Russia)</option>
-            <option value="ar">Árabe (Middle East)</option>
-            <option value="ja">Japonês (Japan)</option>
-            <option value="hi">Hindi (India)</option>
-        </select>
-        <textarea placeholder="Escreva o texto original para tradução oficial..."></textarea>
-        <button class="btn-ia">Traduzir Texto Oficial</button>
+    <div id="ia" class="section">
+        <h2>🤖 IA Cervantes (Cérebro Gemini)</h2>
+        <p>Peça para criar sites, APKs em Python/Java ou traduzir textos oficiais:</p>
+        <textarea id="userInput" rows="5" placeholder="Ex: Cria um código Python para uma calculadora..."></textarea>
+        <button class="btn-ia" id="btnGerar" onclick="chamarGemini()">GERAR COM INTELIGÊNCIA ARTIFICIAL</button>
+        
+        <div id="responseArea">A aguardar pedido...</div>
     </div>
 
 </div>
 
 <script>
+    const API_KEY = "AIzaSyBge0bWGIMbtVzsPr8PwyHrlBQ6fbQtwjE"; // Tua chave real
+
     function showSec(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
 
-    function gerarCodigo() {
-        let p = document.getElementById('promptIA').value;
-        let res = document.getElementById('resultCode');
-        res.style.display = 'block';
-        res.innerText = "/* GENERATING SYSTEM CODE */\n\n// TARGET: " + p + "\n\nclass CervantesApp {\n  constructor() {\n    this.security = 'ENCRYPTED';\n    this.mode = 'GLOBAL_ACCESS';\n  }\n\n  build() {\n    console.log('Building APK / Web Assets...');\n  }\n}\n\n// Build successful!";
+    // FUNÇÃO PARA CHAMADA REAL
+    function iniciarChamada() {
+        let sala = document.getElementById('callName').value || "Cervantes_Sala_Privada";
+        window.open(`https://meet.jit.si/${sala}`, '_blank');
+    }
+
+    // FUNÇÃO PARA FALAR COM O GEMINI REAL
+    async function chamarGemini() {
+        const prompt = document.getElementById('userInput').value;
+        const responseArea = document.getElementById('responseArea');
+        const btn = document.getElementById('btnGerar');
+
+        if (!prompt) return alert("Escreve algo primeiro!");
+
+        responseArea.innerText = "🤖 A pensar e a gerar código...";
+        btn.disabled = true;
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
+
+            const data = await response.json();
+            const textoFinal = data.candidates[0].content.parts[0].text;
+            responseArea.innerText = textoFinal;
+        } catch (error) {
+            responseArea.innerText = "❌ Erro ao ligar à IA. Verifica a tua chave ou conexão.";
+            console.error(error);
+        } finally {
+            btn.disabled = false;
+        }
     }
 </script>
 
