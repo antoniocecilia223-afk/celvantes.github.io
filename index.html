@@ -6,71 +6,74 @@
     <title>Cervantes | Super App</title>
     <style>
         :root { --gold: #d4af37; --bg: #000; --card: #161616; }
-        body { font-family: 'Helvetica', sans-serif; background: var(--bg); color: white; margin: 0; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; text-align: center; }
         
-        /* NAVBAR ESTILO GOOGLE/GEMINI */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
-        .logo { color: var(--gold); font-weight: bold; font-size: 1.8rem; letter-spacing: 3px; }
-        .search { background: #1e1e1e; border: 1px solid #333; color: white; padding: 10px 20px; border-radius: 30px; width: 40%; }
+        /* NAVBAR */
+        nav { display: flex; justify-content: space-between; padding: 15px; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
+        .logo { color: var(--gold); font-weight: bold; font-size: 1.5rem; letter-spacing: 2px; }
 
-        /* FEED DE VÍDEOS (ESTILO TIKTOK/REELS) */
-        .video-feed { height: 400px; width: 250px; background: #111; margin: 20px auto; border-radius: 20px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; position: relative; }
-        .video-feed::after { content: "▶ Vídeo IA Cervantes"; color: var(--gold); }
-
-        /* TABELA DE PREÇOS */
+        /* CARDS */
         .price-container { display: flex; justify-content: center; gap: 20px; padding: 40px; flex-wrap: wrap; }
-        .card { background: var(--card); border-radius: 20px; padding: 30px; width: 280px; border: 1px solid #222; text-align: center; transition: 0.4s; }
-        .card:hover { border-color: var(--gold); transform: translateY(-10px); }
+        .card { background: var(--card); border-radius: 20px; padding: 30px; width: 280px; border: 1px solid #333; }
         .card.premium { border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
-        .price { font-size: 3rem; font-weight: bold; color: var(--gold); margin: 20px 0; }
+        .price { font-size: 3rem; font-weight: bold; color: var(--gold); margin: 15px 0; }
         
-        /* BOTÕES DE ACÇÃO */
-        .btn { background: var(--gold); color: black; padding: 15px; border-radius: 10px; border: none; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; }
-        
-        /* WHATSAPP CHAT FLOATING */
-        .chat-box { position: fixed; bottom: 20px; right: 20px; background: #25d366; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        
-        h2 { text-align: center; color: var(--gold); margin-top: 50px; }
+        /* BOTÕES */
+        .btn { background: var(--gold); color: black; padding: 15px; border-radius: 10px; border: none; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: #fff; }
+
+        /* WHATSAPP FLOAT */
+        .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 25px; cursor: pointer; text-decoration: none; }
     </style>
 </head>
 <body>
 
 <nav>
     <div class="logo">CERVANTES</div>
-    <input type="text" class="search" placeholder="Pesquisar no Cervantes (IA integrada)...">
-    <div class="user">👤 Login</div>
+    <div style="color: var(--gold)">● IA ATIVA</div>
 </nav>
 
-<div style="text-align:center; padding: 40px;">
-    <h1>A Plataforma Tudo-em-Um</h1>
-    <p>Vídeos, Mensagens e Inteligência Artificial</p>
-</div>
-
-<div class="video-feed"></div>
-
-<h2>Planos e Proteção</h2>
+<header style="padding: 50px 20px;">
+    <h1>Bem-vindo ao Futuro</h1>
+    <p>Vídeos, Proteção e Inteligência Artificial Cervantes</p>
+</header>
 
 <div class="price-container">
     <div class="card">
         <h3>Criação de Vídeo IA</h3>
-        <p>Gere vídeos automaticamente com a nossa inteligência artificial.</p>
-        <div class="price">3$<span>/mês</span></div>
-        <button class="btn">Ativar IA</button>
+        <p>Gere vídeos automaticamente com nossa IA.</p>
+        <div class="price">3$</div>
+        <button class="btn" onclick="ativarIA()">ATIVAR IA</button>
     </div>
 
     <div class="card premium">
         <h3>Proteção Anti-Cópia</h3>
-        <p>Impedimos que qualquer pessoa publique ou roube os seus vídeos.</p>
-        <div class="price">16$<span>/mês</span></div>
-        <button class="btn">Proteger Agora</button>
+        <p>Bloqueie e proteja os seus vídeos contra roubos.</p>
+        <div class="price">16$</div>
+        <button class="btn" onclick="sistemaSeguranca()">PROTEGER AGORA</button>
     </div>
 </div>
 
-<div class="chat-box" title="Suporte Cervantes">💬</div>
+<a href="https://wa.me/244900000000" class="wa-float">💬</a>
 
-<footer style="text-align: center; padding: 50px; color: #444; font-size: 0.8rem;">
-    CERVANTES TECHNOLOGY © 2026 - O Futuro é Aqui.
-</footer>
+<script>
+    function ativarIA() {
+        alert("🤖 Iniciando Processador Gemini Cervantes...\n\nPor favor, faça upload do seu roteiro.");
+    }
+
+    function sistemaSeguranca() {
+        // 1. Bloqueio por palavra-passe
+        let senha = prompt("🔒 SISTEMA PROTEGIDO\nInsira a palavra-passe de segurança para aceder ao formulário:");
+
+        if (senha === "CERVANTES123") {
+            alert("✅ Acesso Concedido! Redirecionando para o Pagamento Seguro...");
+            // 2. Redireciona para o formulário ou WhatsApp
+            window.location.href = "https://wa.me/244900000000?text=Quero%20pagar%20os%2016%20dolares%20da%20protecao";
+        } else {
+            alert("❌ Senha Errada! Acesso ao Plano de 16$ bloqueado.");
+        }
+    }
+</script>
 
 </body>
 </html>
