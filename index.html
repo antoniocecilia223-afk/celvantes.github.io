@@ -5,120 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cervantes | Super App</title>
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --card: #121212; --text: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
+        :root { --gold: #d4af37; --bg: #050505; --sidebar-bg: #101010; --card: #181818; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; }
 
-        /* BARRA SUPERIOR */
-        nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #000; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
-        .menu-btn { font-size: 28px; cursor: pointer; color: var(--gold); background: none; border: none; }
-        .logo { font-weight: bold; font-size: 1.5rem; letter-spacing: 2px; color: var(--gold); text-decoration: none; }
+        /* MENU LATERAL SEMPRE VISÍVEL */
+        .sidebar { 
+            width: 260px; 
+            background: var(--sidebar-bg); 
+            height: 100vh; 
+            position: fixed; 
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
 
-        /* MENU LATERAL (SIDEBAR) */
-        .sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: #000; z-index: 2000; transition: 0.3s; padding-top: 20px; border-right: 1px solid var(--gold); }
-        .sidebar.active { left: 0; }
-        .sidebar h2 { color: var(--gold); padding: 20px; font-size: 1.2rem; border-bottom: 1px solid #222; }
-        .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; font-size: 1rem; transition: 0.2s; }
-        .sidebar a:hover { background: #1a1a1a; color: var(--gold); padding-left: 35px; }
-        .close-sidebar { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: var(--gold); }
+        .sidebar-header {
+            padding: 30px 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-align: center;
+            border-bottom: 1px solid #222;
+        }
 
-        /* CONTEÚDO PRINCIPAL (FEED) */
-        .main-content { padding: 15px; max-width: 600px; margin: 0 auto; padding-bottom: 100px; }
-        .video-card { background: var(--card); border-radius: 15px; margin-bottom: 25px; overflow: hidden; border: 1px solid #222; }
-        video { width: 100%; display: block; background: #000; max-height: 500px; }
+        .menu-group { padding: 20px 0; }
+        .menu-item { 
+            padding: 15px 25px; 
+            display: flex; 
+            align-items: center; 
+            text-decoration: none; 
+            color: #ccc; 
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        .menu-item:hover { background: #1a1a1a; color: var(--gold); }
+        .menu-item i { margin-right: 15px; font-style: normal; font-size: 1.2rem; }
+
+        /* CONTEÚDO PRINCIPAL (À direita do menu) */
+        .main-content { 
+            margin-left: 260px; /* Mesma largura da sidebar */
+            flex-grow: 1;
+            padding: 20px;
+            max-width: 800px;
+        }
+
+        /* FEED DE VÍDEOS */
+        .video-card { 
+            background: var(--card); 
+            border-radius: 12px; 
+            margin-bottom: 30px; 
+            border: 1px solid #222;
+            overflow: hidden;
+        }
+        video { width: 100%; max-height: 450px; background: #000; }
         .video-info { padding: 15px; }
-        .video-info strong { color: var(--gold); font-size: 1.1rem; }
+        .video-info strong { color: var(--gold); }
+        
         .actions { display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #222; }
-        .action-btn { background: none; border: none; color: white; cursor: pointer; font-size: 0.9rem; }
-        .action-btn:hover { color: var(--gold); }
+        .action-btn { background: none; border: none; color: white; cursor: pointer; }
 
-        /* BARRA INFERIOR */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; z-index: 1000; }
-        .nav-item { text-align: center; color: #888; cursor: pointer; font-size: 0.7rem; }
-        .nav-item i { display: block; font-size: 22px; color: white; margin-bottom: 4px; font-style: normal; }
-        .nav-item.active i { color: var(--gold); }
-
-        /* OVERLAY */
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; }
-        .overlay.active { display: block; }
+        /* RESPONSIVIDADE (Para telemóvel) */
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar span, .sidebar-header { display: none; }
+            .main-content { margin-left: 70px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-
-<nav>
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    <a href="#" class="logo">CERVANTES</a>
-    <div onclick="alert('Iniciando Sessão...')">👤</div>
-</nav>
-
-<div class="sidebar" id="sidebar">
-    <span class="close-sidebar" onclick="toggleMenu()">×</span>
-    <h2>MENU PRINCIPAL</h2>
-    <a href="#" onclick="alert('A carregar todos os vídeos...')">📺 Ver Vídeos</a>
-    <a href="#" onclick="alert('Abrindo Canais...')">📂 Canais da Comunidade</a>
-    <a href="#" onclick="alert('Criando seu Canal...')">➕ Criar meu Canal</a>
-    <a href="#" onclick="alert('Entrando em Lives...')">🔴 Participar em Lives</a>
-    <a href="#" onclick="ativarChatPrivado()">💬 Conversas Privadas</a>
-    <a href="#" onclick="falarIA()">🤖 Falar com IA (Gemini)</a>
-    <a href="#" onclick="sistemaSeguranca()">💳 Atualizar Plano (3$/16$)</a>
-    <a href="#" onclick="alert('Configurações...')">⚙️ Configurações</a>
-    <a href="#" onclick="alert('Saindo...')">🔑 Iniciar Sessão / Sair</a>
+<div class="sidebar">
+    <div class="sidebar-header">CERVANTES</div>
+    
+    <div class="menu-group">
+        <a href="#" class="menu-item" onclick="alert('Explorar Vídeos...')"><i>📺</i> <span>Ver Vídeos</span></a>
+        <a href="#" class="menu-item" onclick="alert('Canais ativos...')"><i>📁</i> <span>Canais</span></a>
+        <a href="#" class="menu-item" onclick="alert('Criar seu canal...')"><i>➕</i> <span>Criar Canal</span></a>
+        <a href="#" class="menu-item" onclick="alert('A abrir Lives...')"><i>🔴</i> <span>Lives</span></a>
+        <a href="#" class="menu-item" onclick="falarIA()"><i>🤖</i> <span>Falar com IA</span></a>
+        <a href="#" class="menu-item" onclick="alert('WhatsApp Interno...')"><i>💬</i> <span>Conversa Privada</span></a>
+        <a href="#" class="menu-item" onclick="alert('Abrindo Reels...')"><i>🎬</i> <span>Reels</span></a>
+        <a href="#" class="menu-item" onclick="sistemaSeguranca()"><i>💳</i> <span>Atualizar Plano</span></a>
+        <a href="#" class="menu-item" onclick="alert('Configurações...')"><i>⚙️</i> <span>Configurações</span></a>
+        <a href="#" class="menu-item" onclick="alert('Saindo...')"><i>🔑</i> <span>Iniciar Sessão</span></a>
+    </div>
 </div>
 
 <div class="main-content">
+    <header style="padding: 20px 0;">
+        <h1>Bem-vindo à Super App</h1>
+        <p style="color: #888;">Tudo o que precisas num só lugar.</p>
+    </header>
+
     <div class="video-card">
-        <video controls poster="https://via.placeholder.com/600x400/121212/d4af37?text=Cervantes+Video">
+        <video controls>
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-            O seu navegador não suporta vídeos.
         </video>
         <div class="video-info">
-            <strong>@Cervantes_Oficial</strong>
-            <p>Bem-vindo à Super App! Este é o futuro da IA em Angola e no mundo. 🚀</p>
+            <strong>@Cervantes_Global</strong>
+            <p>O teu sistema de vídeos, canais e IA já está configurado. 🚀</p>
         </div>
         <div class="actions">
-            <button class="action-btn" onclick="this.style.color='#d4af37'">❤️ Like</button>
-            <button class="action-btn" onclick="comentar()">💬 Comentar</button>
-            <button class="action-btn" onclick="alert('Link copiado!')">🔗 Partilhar</button>
+            <button class="action-btn">❤️ Like</button>
+            <button class="action-btn" onclick="prompt('Escreve o teu comentário:')">💬 Comentar</button>
+            <button class="action-btn">🔗 Partilhar</button>
         </div>
     </div>
 </div>
 
-<div class="bottom-nav">
-    <div class="nav-item active"><i>🏠</i>Início</div>
-    <div class="nav-item" onclick="alert('Carregando Reels...')"><i>🎬</i>Reels</div>
-    <div class="nav-item" style="color: var(--gold);" onclick="falarIA()"><i>🤖</i>IA</div>
-    <div class="nav-item" onclick="alert('Abrindo Chats...')"><i>💬</i>Chat</div>
-    <div class="nav-item" onclick="toggleMenu()"><i>☰</i>Menu</div>
-</div>
-
 <script>
-    function toggleMenu() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('active');
-    }
-
-    function comentar() {
-        let msg = prompt("Escreva o seu comentário:");
-        if(msg) alert("Comentário publicado: " + msg);
-    }
-
     function falarIA() {
-        let p = prompt("Sou o Gemini Cervantes. O que queres criar hoje?");
-        if(p) alert("🤖 A processar com IA: " + p);
-    }
-
-    function ativarChatPrivado() {
-        alert("🔒 Abrindo encriptação estilo WhatsApp...\nConectando aos seus contactos.");
+        let p = prompt("Sou o Gemini Cervantes. Como posso ajudar?");
+        if(p) alert("🤖 A processar: " + p);
     }
 
     function sistemaSeguranca() {
-        let senha = prompt("🔒 ACESSO AOS PLANOS\nInsira a senha de administrador (CERVANTES123):");
+        let senha = prompt("Insira a senha (CERVANTES123):");
         if(senha === "CERVANTES123") {
-            alert("Acesso concedido aos planos de 3$ e 16$. Redirecionando...");
-            window.location.href = "https://wa.me/244900000000"; 
+            window.location.href = "https://wa.me/244900000000";
         } else {
-            alert("Senha incorreta.");
+            alert("Acesso negado.");
         }
     }
 </script>
