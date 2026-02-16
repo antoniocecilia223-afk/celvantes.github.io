@@ -5,129 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cervantes | Super App</title>
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --sidebar-bg: #101010; --card: #181818; }
+        :root { --gold: #d4af37; --bg: #050505; --sidebar-bg: #101010; --card: #181818; --green: #25d366; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; }
 
-        /* MENU LATERAL SEMPRE VISÍVEL */
-        .sidebar { 
-            width: 260px; 
-            background: var(--sidebar-bg); 
-            height: 100vh; 
-            position: fixed; 
-            border-right: 1px solid #222;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            padding: 30px 20px;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--gold);
-            letter-spacing: 3px;
-            text-align: center;
-            border-bottom: 1px solid #222;
-        }
-
-        .menu-group { padding: 20px 0; }
-        .menu-item { 
-            padding: 15px 25px; 
-            display: flex; 
-            align-items: center; 
-            text-decoration: none; 
-            color: #ccc; 
-            font-size: 1rem;
-            transition: 0.3s;
-        }
+        /* SIDEBAR FIXA */
+        .sidebar { width: 260px; background: var(--sidebar-bg); height: 100vh; position: fixed; border-right: 1px solid #222; overflow-y: auto; }
+        .sidebar-header { padding: 30px; font-size: 1.8rem; font-weight: bold; color: var(--gold); text-align: center; border-bottom: 1px solid #222; }
+        .menu-item { padding: 15px 25px; display: flex; align-items: center; text-decoration: none; color: #ccc; cursor: pointer; transition: 0.3s; }
         .menu-item:hover { background: #1a1a1a; color: var(--gold); }
-        .menu-item i { margin-right: 15px; font-style: normal; font-size: 1.2rem; }
+        .menu-item i { margin-right: 15px; font-style: normal; }
 
-        /* CONTEÚDO PRINCIPAL (À direita do menu) */
-        .main-content { 
-            margin-left: 260px; /* Mesma largura da sidebar */
-            flex-grow: 1;
-            padding: 20px;
-            max-width: 800px;
-        }
-
-        /* FEED DE VÍDEOS */
-        .video-card { 
-            background: var(--card); 
-            border-radius: 12px; 
-            margin-bottom: 30px; 
-            border: 1px solid #222;
-            overflow: hidden;
-        }
-        video { width: 100%; max-height: 450px; background: #000; }
-        .video-info { padding: 15px; }
-        .video-info strong { color: var(--gold); }
+        /* ÁREA PRINCIPAL */
+        .main-content { margin-left: 260px; flex-grow: 1; padding: 20px; max-width: 800px; }
         
-        .actions { display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #222; }
-        .action-btn { background: none; border: none; color: white; cursor: pointer; }
+        /* CAIXA DE PUBLICAÇÃO (Estilo Facebook/Instagram) */
+        .publish-box { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #333; }
+        .publish-box textarea { width: 100%; background: #000; border: 1px solid #444; color: white; padding: 10px; border-radius: 8px; resize: none; box-sizing: border-box; }
+        .publish-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .file-btn { background: #333; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
+        .post-btn { background: var(--gold); color: black; border: none; padding: 8px 20px; border-radius: 5px; font-weight: bold; margin-left: auto; cursor: pointer; }
 
-        /* RESPONSIVIDADE (Para telemóvel) */
-        @media (max-width: 768px) {
-            .sidebar { width: 70px; }
-            .sidebar span, .sidebar-header { display: none; }
-            .main-content { margin-left: 70px; }
-        }
+        /* MODAL DE CHAT (Estilo WhatsApp) */
+        .chat-container { display: none; background: #000; border: 1px solid var(--gold); border-radius: 15px; padding: 20px; margin-top: 20px; }
+        .chat-input { display: flex; gap: 10px; margin-top: 15px; }
+        .chat-input input { flex-grow: 1; padding: 10px; border-radius: 20px; border: 1px solid #444; background: #111; color: white; }
+
+        .active-section { display: block !important; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <div class="sidebar-header">CERVANTES</div>
-    
     <div class="menu-group">
-        <a href="#" class="menu-item" onclick="alert('Explorar Vídeos...')"><i>📺</i> <span>Ver Vídeos</span></a>
-        <a href="#" class="menu-item" onclick="alert('Canais ativos...')"><i>📁</i> <span>Canais</span></a>
-        <a href="#" class="menu-item" onclick="alert('Criar seu canal...')"><i>➕</i> <span>Criar Canal</span></a>
-        <a href="#" class="menu-item" onclick="alert('A abrir Lives...')"><i>🔴</i> <span>Lives</span></a>
-        <a href="#" class="menu-item" onclick="falarIA()"><i>🤖</i> <span>Falar com IA</span></a>
-        <a href="#" class="menu-item" onclick="alert('WhatsApp Interno...')"><i>💬</i> <span>Conversa Privada</span></a>
-        <a href="#" class="menu-item" onclick="alert('Abrindo Reels...')"><i>🎬</i> <span>Reels</span></a>
-        <a href="#" class="menu-item" onclick="sistemaSeguranca()"><i>💳</i> <span>Atualizar Plano</span></a>
-        <a href="#" class="menu-item" onclick="alert('Configurações...')"><i>⚙️</i> <span>Configurações</span></a>
-        <a href="#" class="menu-item" onclick="alert('Saindo...')"><i>🔑</i> <span>Iniciar Sessão</span></a>
+        <a class="menu-item" onclick="show('home')"><i>🏠</i> Início / Feed</a>
+        <a class="menu-item" onclick="show('publish')"><i>➕</i> Criar Canal / Publicar</a>
+        <a class="menu-item" onclick="show('chat')"><i>💬</i> Conversas / Grupos</a>
+        <a class="menu-item" onclick="alert('A abrir Stories...')"><i>📸</i> Publicar História</a>
+        <a class="menu-item" onclick="alert('IA a pensar...')"><i>🤖</i> IA Gemini</a>
+        <a class="menu-item" onclick="location.reload()"><i>💳</i> Atualizar Plano</a>
     </div>
 </div>
 
 <div class="main-content">
-    <header style="padding: 20px 0;">
-        <h1>Bem-vindo à Super App</h1>
-        <p style="color: #888;">Tudo o que precisas num só lugar.</p>
-    </header>
-
-    <div class="video-card">
-        <video controls>
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-        </video>
-        <div class="video-info">
-            <strong>@Cervantes_Global</strong>
-            <p>O teu sistema de vídeos, canais e IA já está configurado. 🚀</p>
-        </div>
-        <div class="actions">
-            <button class="action-btn">❤️ Like</button>
-            <button class="action-btn" onclick="prompt('Escreve o teu comentário:')">💬 Comentar</button>
-            <button class="action-btn">🔗 Partilhar</button>
+    
+    <div id="publish" class="chat-container">
+        <h3>🚀 Criar Novo Conteúdo</h3>
+        <textarea placeholder="O que estás a pensar? (Texto tipo Facebook)"></textarea>
+        <div class="publish-actions">
+            <label class="file-btn">🎥 Vídeo (YouTube/TikTok) <input type="file" style="display:none"></label>
+            <label class="file-btn">📸 Foto/História <input type="file" style="display:none"></label>
+            <button class="post-btn" onclick="alert('Publicado com sucesso no seu Canal!')">Publicar</button>
         </div>
     </div>
+
+    <div id="chat" class="chat-container">
+        <h3>💬 Mensagens Cervantes</h3>
+        <div style="margin-bottom: 10px;">
+            <input type="text" id="userSearch" placeholder="Nome de utilizador ou número (+244...)" style="width:100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;">
+        </div>
+        <button class="file-btn" style="background: var(--green); color: black;" onclick="alert('Grupo Criado!')">👥 Criar Grupo / Comunidade</button>
+        
+        <div id="chatWindow" style="height: 200px; border: 1px solid #222; margin-top: 20px; padding: 10px; overflow-y: auto; color: #888;">
+            Selecione uma conversa para começar...
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" placeholder="Escreva uma mensagem...">
+            <button class="post-btn" style="background: var(--green)">Enviar</button>
+        </div>
+    </div>
+
+    <div id="home">
+        <h2>Feed Principal</h2>
+        <div style="background: #121212; padding: 20px; border-radius: 10px; border: 1px solid #222;">
+            <strong style="color: var(--gold);">@Admin_Cervantes</strong>
+            <p>O teu canal já permite publicar vídeos e textos! Experimenta o menu ao lado.</p>
+        </div>
+    </div>
+
 </div>
 
 <script>
-    function falarIA() {
-        let p = prompt("Sou o Gemini Cervantes. Como posso ajudar?");
-        if(p) alert("🤖 A processar: " + p);
+    function show(id) {
+        // Esconde todas as secções
+        document.getElementById('home').style.display = 'none';
+        document.getElementById('publish').style.display = 'none';
+        document.getElementById('chat').style.display = 'none';
+        
+        // Mostra a secção clicada
+        document.getElementById(id).style.display = 'block';
     }
 
-    function sistemaSeguranca() {
-        let senha = prompt("Insira a senha (CERVANTES123):");
-        if(senha === "CERVANTES123") {
-            window.location.href = "https://wa.me/244900000000";
-        } else {
-            alert("Acesso negado.");
-        }
+    function falarIA() {
+        let p = prompt("Sou o Gemini Cervantes. O que queres criar hoje?");
+        if(p) alert("🤖 IA: Estou a processar " + p);
     }
 </script>
 
