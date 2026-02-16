@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | Super App & IA</title>
+    <title>Cervantes | Global Super App</title>
     <style>
         :root { --gold: #d4af37; --bg: #050505; --card: #111; --green: #25d366; --blue: #3498db; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; }
@@ -20,12 +20,11 @@
         .section { display: none; background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #222; margin-top: 10px; }
         .active { display: block; }
 
-        /* BOTÕES E INPUTS */
+        /* INPUTS E BOTÕES */
         input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
         .btn-call { background: var(--green); color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
         .btn-ia { background: var(--gold); color: black; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
 
-        /* TERMINAL DE CÓDIGO IA */
         .code-output { background: #000; color: #00ff00; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.9rem; border: 1px solid #00ff0033; white-space: pre-wrap; margin-top: 15px; }
     </style>
 </head>
@@ -33,54 +32,59 @@
 
 <div class="sidebar">
     <div class="sidebar-header">CERVANTES</div>
-    <a class="menu-item" onclick="showSec('home')"><i>🏠</i> Feed Principal</a>
+    <a class="menu-item" onclick="showSec('home')"><i>🏠</i> Feed Global</a>
     <a class="menu-item" onclick="showSec('chat')"><i>💬</i> Chats e Chamadas</a>
-    <a class="menu-item" onclick="showSec('ia-code')"><i>🤖</i> IA: Criar APK/Site</a>
-    <a class="menu-item" onclick="showSec('translate')"><i>🌍</i> Tradutor Nacional</a>
-    <a class="menu-item" onclick="location.reload()"><i>💳</i> Planos (3$ / 16$)</a>
+    <a class="menu-item" onclick="showSec('ia-code')"><i>🤖</i> IA: APK e Web Design</a>
+    <a class="menu-item" onclick="showSec('translate')"><i>🌍</i> Tradutor Oficial Global</a>
+    <a class="menu-item" onclick="location.reload()"><i>💳</i> Upgrade de Plano</a>
 </div>
 
 <div class="main-content">
     
     <div id="home" class="section active">
-        <h1>Bem-vindo, Criador</h1>
-        <p>A tua Super App está pronta para o próximo nível.</p>
+        <h1>Conectividade Global</h1>
+        <p>A tua Super App agora fala todas as línguas oficiais do mundo.</p>
         <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; border-left: 5px solid var(--gold);">
-            <strong>Status:</strong> IA Conectada | Servidor Angola Online
+            <strong>Status do Sistema:</strong> Tradutor Oficial Ativo | Códigos Internacionais Liberados
         </div>
     </div>
 
     <div id="chat" class="section">
-        <h2>Mensagens e Chamadas</h2>
-        <input type="text" placeholder="Número (+244...) ou Nome de Utilizador">
+        <h2>Comunicação Internacional</h2>
+        <p>Introduza o código do país seguido do número:</p>
+        <input type="text" placeholder="Ex: +244 (Angola), +351 (Portugal), +1 (EUA)...">
         <div style="display: flex; gap: 10px;">
-            <button class="btn-call" onclick="alert('Iniciando Chamada de Vídeo Encriptada...')">📹 Chamada de Vídeo</button>
-            <button class="btn-call" style="background: var(--blue)" onclick="alert('Iniciando Chamada de Voz...')">📞 Voz</button>
+            <button class="btn-call" onclick="alert('Iniciando Vídeo-Chamada Internacional...')">📹 Vídeo Global</button>
+            <button class="btn-call" style="background: var(--blue)" onclick="alert('Chamada de Voz Iniciada...')">📞 Voz</button>
         </div>
-        <textarea placeholder="Escreva a sua mensagem privada..." rows="4"></textarea>
+        <textarea placeholder="Mensagem direta segura..." rows="4"></textarea>
         <button class="btn-ia" style="background: var(--green); color: white;">Enviar Mensagem</button>
     </div>
 
     <div id="ia-code" class="section">
-        <h2>IA Cervantes: Developer Mode</h2>
-        <p>Descreve a App ou Site que queres criar:</p>
-        <textarea id="promptIA" rows="4" placeholder="Ex: Cria um código para uma app de entregas em APK..."></textarea>
-        <button class="btn-ia" onclick="gerarCodigo()">GERAR CÓDIGO / APK ESTRUTURA</button>
+        <h2>IA Cervantes Developer</h2>
+        <textarea id="promptIA" rows="4" placeholder="Descreve o teu site, app ou APK em qualquer língua..."></textarea>
+        <button class="btn-ia" onclick="gerarCodigo()">GERAR CÓDIGO FONTE</button>
         <div id="resultCode" class="code-output" style="display:none"></div>
     </div>
 
     <div id="translate" class="section">
-        <h2>Tradutor Universal Cervantes</h2>
-        <p>Fale em qualquer língua (Kimbundu, Umbundu, Cokwe, etc.)</p>
-        <select>
-            <option>Português (Angola)</option>
-            <option>Kimbundu</option>
-            <option>Umbundu</option>
-            <option>Cokwe</option>
-            <option>Inglês / Francês</option>
+        <h2>Tradutor Oficial Universal</h2>
+        <p>Selecione a língua de destino:</p>
+        <select id="langSelect">
+            <option value="pt">Português (Oficial)</option>
+            <option value="en">Inglês (United Kingdom / USA)</option>
+            <option value="es">Espanhol (España / América Latina)</option>
+            <option value="fr">Francês (France)</option>
+            <option value="de">Alemão (Deutschland)</option>
+            <option value="zh">Chinês Mandarim (China)</option>
+            <option value="ru">Russo (Russia)</option>
+            <option value="ar">Árabe (Middle East)</option>
+            <option value="ja">Japonês (Japan)</option>
+            <option value="hi">Hindi (India)</option>
         </select>
-        <textarea placeholder="Escreva aqui para traduzir..."></textarea>
-        <button class="btn-ia">Traduzir Agora</button>
+        <textarea placeholder="Escreva o texto original para tradução oficial..."></textarea>
+        <button class="btn-ia">Traduzir Texto Oficial</button>
     </div>
 
 </div>
@@ -95,7 +99,7 @@
         let p = document.getElementById('promptIA').value;
         let res = document.getElementById('resultCode');
         res.style.display = 'block';
-        res.innerText = "/* GERANDO CÓDIGO PARA: " + p + " */\n\n# Cervantes Compiler v1.0\nimport cervantes_core\n\ndef init_app():\n    print('Criando ficheiros APK...') \n    build_interface()\n    connect_database()\n\n// Código gerado com sucesso!";
+        res.innerText = "/* GENERATING SYSTEM CODE */\n\n// TARGET: " + p + "\n\nclass CervantesApp {\n  constructor() {\n    this.security = 'ENCRYPTED';\n    this.mode = 'GLOBAL_ACCESS';\n  }\n\n  build() {\n    console.log('Building APK / Web Assets...');\n  }\n}\n\n// Build successful!";
     }
 </script>
 
