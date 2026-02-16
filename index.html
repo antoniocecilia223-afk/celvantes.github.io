@@ -3,103 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | Super App</title>
+    <title>Cervantes | Super App & IA</title>
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --sidebar-bg: #101010; --card: #181818; --green: #25d366; }
+        :root { --gold: #d4af37; --bg: #050505; --card: #111; --green: #25d366; --blue: #3498db; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; }
 
-        /* SIDEBAR FIXA */
-        .sidebar { width: 260px; background: var(--sidebar-bg); height: 100vh; position: fixed; border-right: 1px solid #222; overflow-y: auto; }
-        .sidebar-header { padding: 30px; font-size: 1.8rem; font-weight: bold; color: var(--gold); text-align: center; border-bottom: 1px solid #222; }
-        .menu-item { padding: 15px 25px; display: flex; align-items: center; text-decoration: none; color: #ccc; cursor: pointer; transition: 0.3s; }
-        .menu-item:hover { background: #1a1a1a; color: var(--gold); }
-        .menu-item i { margin-right: 15px; font-style: normal; }
+        /* SIDEBAR */
+        .sidebar { width: 250px; background: #000; height: 100vh; position: fixed; border-right: 1px solid #222; overflow-y: auto; }
+        .sidebar-header { padding: 25px; font-size: 1.5rem; font-weight: bold; color: var(--gold); border-bottom: 1px solid #222; text-align: center; }
+        .menu-item { padding: 15px 20px; display: flex; align-items: center; cursor: pointer; color: #bbb; text-decoration: none; border-bottom: 1px solid #080808; }
+        .menu-item:hover { background: #111; color: var(--gold); }
+        .menu-item i { margin-right: 12px; font-style: normal; }
 
-        /* ÁREA PRINCIPAL */
-        .main-content { margin-left: 260px; flex-grow: 1; padding: 20px; max-width: 800px; }
-        
-        /* CAIXA DE PUBLICAÇÃO (Estilo Facebook/Instagram) */
-        .publish-box { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #333; }
-        .publish-box textarea { width: 100%; background: #000; border: 1px solid #444; color: white; padding: 10px; border-radius: 8px; resize: none; box-sizing: border-box; }
-        .publish-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .file-btn { background: #333; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
-        .post-btn { background: var(--gold); color: black; border: none; padding: 8px 20px; border-radius: 5px; font-weight: bold; margin-left: auto; cursor: pointer; }
+        /* CONTEÚDO PRINCIPAL */
+        .main-content { margin-left: 250px; flex-grow: 1; padding: 20px; max-width: 900px; }
+        .section { display: none; background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #222; margin-top: 10px; }
+        .active { display: block; }
 
-        /* MODAL DE CHAT (Estilo WhatsApp) */
-        .chat-container { display: none; background: #000; border: 1px solid var(--gold); border-radius: 15px; padding: 20px; margin-top: 20px; }
-        .chat-input { display: flex; gap: 10px; margin-top: 15px; }
-        .chat-input input { flex-grow: 1; padding: 10px; border-radius: 20px; border: 1px solid #444; background: #111; color: white; }
+        /* BOTÕES E INPUTS */
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn-call { background: var(--green); color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .btn-ia { background: var(--gold); color: black; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
 
-        .active-section { display: block !important; }
+        /* TERMINAL DE CÓDIGO IA */
+        .code-output { background: #000; color: #00ff00; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.9rem; border: 1px solid #00ff0033; white-space: pre-wrap; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <div class="sidebar-header">CERVANTES</div>
-    <div class="menu-group">
-        <a class="menu-item" onclick="show('home')"><i>🏠</i> Início / Feed</a>
-        <a class="menu-item" onclick="show('publish')"><i>➕</i> Criar Canal / Publicar</a>
-        <a class="menu-item" onclick="show('chat')"><i>💬</i> Conversas / Grupos</a>
-        <a class="menu-item" onclick="alert('A abrir Stories...')"><i>📸</i> Publicar História</a>
-        <a class="menu-item" onclick="alert('IA a pensar...')"><i>🤖</i> IA Gemini</a>
-        <a class="menu-item" onclick="location.reload()"><i>💳</i> Atualizar Plano</a>
-    </div>
+    <a class="menu-item" onclick="showSec('home')"><i>🏠</i> Feed Principal</a>
+    <a class="menu-item" onclick="showSec('chat')"><i>💬</i> Chats e Chamadas</a>
+    <a class="menu-item" onclick="showSec('ia-code')"><i>🤖</i> IA: Criar APK/Site</a>
+    <a class="menu-item" onclick="showSec('translate')"><i>🌍</i> Tradutor Nacional</a>
+    <a class="menu-item" onclick="location.reload()"><i>💳</i> Planos (3$ / 16$)</a>
 </div>
 
 <div class="main-content">
     
-    <div id="publish" class="chat-container">
-        <h3>🚀 Criar Novo Conteúdo</h3>
-        <textarea placeholder="O que estás a pensar? (Texto tipo Facebook)"></textarea>
-        <div class="publish-actions">
-            <label class="file-btn">🎥 Vídeo (YouTube/TikTok) <input type="file" style="display:none"></label>
-            <label class="file-btn">📸 Foto/História <input type="file" style="display:none"></label>
-            <button class="post-btn" onclick="alert('Publicado com sucesso no seu Canal!')">Publicar</button>
+    <div id="home" class="section active">
+        <h1>Bem-vindo, Criador</h1>
+        <p>A tua Super App está pronta para o próximo nível.</p>
+        <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; border-left: 5px solid var(--gold);">
+            <strong>Status:</strong> IA Conectada | Servidor Angola Online
         </div>
     </div>
 
-    <div id="chat" class="chat-container">
-        <h3>💬 Mensagens Cervantes</h3>
-        <div style="margin-bottom: 10px;">
-            <input type="text" id="userSearch" placeholder="Nome de utilizador ou número (+244...)" style="width:100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;">
+    <div id="chat" class="section">
+        <h2>Mensagens e Chamadas</h2>
+        <input type="text" placeholder="Número (+244...) ou Nome de Utilizador">
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-call" onclick="alert('Iniciando Chamada de Vídeo Encriptada...')">📹 Chamada de Vídeo</button>
+            <button class="btn-call" style="background: var(--blue)" onclick="alert('Iniciando Chamada de Voz...')">📞 Voz</button>
         </div>
-        <button class="file-btn" style="background: var(--green); color: black;" onclick="alert('Grupo Criado!')">👥 Criar Grupo / Comunidade</button>
-        
-        <div id="chatWindow" style="height: 200px; border: 1px solid #222; margin-top: 20px; padding: 10px; overflow-y: auto; color: #888;">
-            Selecione uma conversa para começar...
-        </div>
-        
-        <div class="chat-input">
-            <input type="text" placeholder="Escreva uma mensagem...">
-            <button class="post-btn" style="background: var(--green)">Enviar</button>
-        </div>
+        <textarea placeholder="Escreva a sua mensagem privada..." rows="4"></textarea>
+        <button class="btn-ia" style="background: var(--green); color: white;">Enviar Mensagem</button>
     </div>
 
-    <div id="home">
-        <h2>Feed Principal</h2>
-        <div style="background: #121212; padding: 20px; border-radius: 10px; border: 1px solid #222;">
-            <strong style="color: var(--gold);">@Admin_Cervantes</strong>
-            <p>O teu canal já permite publicar vídeos e textos! Experimenta o menu ao lado.</p>
-        </div>
+    <div id="ia-code" class="section">
+        <h2>IA Cervantes: Developer Mode</h2>
+        <p>Descreve a App ou Site que queres criar:</p>
+        <textarea id="promptIA" rows="4" placeholder="Ex: Cria um código para uma app de entregas em APK..."></textarea>
+        <button class="btn-ia" onclick="gerarCodigo()">GERAR CÓDIGO / APK ESTRUTURA</button>
+        <div id="resultCode" class="code-output" style="display:none"></div>
+    </div>
+
+    <div id="translate" class="section">
+        <h2>Tradutor Universal Cervantes</h2>
+        <p>Fale em qualquer língua (Kimbundu, Umbundu, Cokwe, etc.)</p>
+        <select>
+            <option>Português (Angola)</option>
+            <option>Kimbundu</option>
+            <option>Umbundu</option>
+            <option>Cokwe</option>
+            <option>Inglês / Francês</option>
+        </select>
+        <textarea placeholder="Escreva aqui para traduzir..."></textarea>
+        <button class="btn-ia">Traduzir Agora</button>
     </div>
 
 </div>
 
 <script>
-    function show(id) {
-        // Esconde todas as secções
-        document.getElementById('home').style.display = 'none';
-        document.getElementById('publish').style.display = 'none';
-        document.getElementById('chat').style.display = 'none';
-        
-        // Mostra a secção clicada
-        document.getElementById(id).style.display = 'block';
+    function showSec(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
 
-    function falarIA() {
-        let p = prompt("Sou o Gemini Cervantes. O que queres criar hoje?");
-        if(p) alert("🤖 IA: Estou a processar " + p);
+    function gerarCodigo() {
+        let p = document.getElementById('promptIA').value;
+        let res = document.getElementById('resultCode');
+        res.style.display = 'block';
+        res.innerText = "/* GERANDO CÓDIGO PARA: " + p + " */\n\n# Cervantes Compiler v1.0\nimport cervantes_core\n\ndef init_app():\n    print('Criando ficheiros APK...') \n    build_interface()\n    connect_database()\n\n// Código gerado com sucesso!";
     }
 </script>
 
