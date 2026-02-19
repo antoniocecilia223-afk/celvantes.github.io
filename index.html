@@ -5,68 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cervantes | Super App</title>
     <style>
-        :root { --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; --border: #333; --msg-me: #d4af37; }
-        .light-mode { --bg: #f5f5f5; --card: #ffffff; --text: #1a1a1a; --border: #ddd; --msg-me: #ffd700; }
+        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #1a1a1a; --text: #ffffff; --border: #2d2d2d; --wa-green: #25d366; }
+        .light-mode { --bg: #f0f2f5; --card: #ffffff; --text: #1c1e21; --border: #ddd; --wa-green: #128c7e; }
 
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* ECRÃ DE REGISTO */
-        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--gold); width: 90%; max-width: 400px; text-align: center; }
+        /* REGISTO */
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--gold); width: 90%; max-width: 400px; text-align: center; }
 
-        /* NAVEGAÇÃO E LAYOUT */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--border); background: var(--bg); }
+        /* HEADER & NAV */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--card); border-bottom: 1px solid var(--border); }
         .wrapper { display: flex; flex: 1; overflow: hidden; }
-        nav { width: 70px; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 30px; }
-        nav i { font-style: normal; font-size: 1.5rem; cursor: pointer; color: #888; }
-        nav i.active { color: var(--gold); }
+        nav { width: 70px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 25px; }
+        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; color: #888; transition: 0.2s; }
+        nav i.active { color: var(--gold); transform: scale(1.1); }
 
-        main { flex: 1; overflow-y: auto; padding: 20px; }
-        .section { display: none; max-width: 600px; margin: 0 auto; }
-        .active-section { display: block; }
+        /* SEÇÕES */
+        main { flex: 1; overflow-y: auto; position: relative; }
+        .section { display: none; height: 100%; }
+        .active-section { display: flex; flex-direction: column; }
 
-        /* ESTILO DOS COMPONENTES */
-        .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 15px; margin-bottom: 20px; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border); background: #000; color: #fff; box-sizing: border-box; }
-        .light-mode input { background: #fff; color: #000; }
-        button { background: var(--gold); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; color: #000; }
+        /* ESTILO WHATSAPP (CHATS) */
+        #chats-list { flex: 1; overflow-y: auto; }
+        .chat-row { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
+        .chat-row:hover { background: rgba(255,255,255,0.05); }
+        .chat-avatar { width: 55px; height: 55px; border-radius: 50%; background: #444; margin-right: 15px; overflow: hidden; border: 1px solid var(--border); }
+        .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .chat-info { flex: 1; }
+        .chat-info h4 { margin: 0; font-size: 1rem; }
+        .chat-info p { margin: 5px 0 0; font-size: 0.85rem; color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* JANELA DE CHAT PRIVADO */
+        #private-chat-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: none; flex-direction: column; z-index: 100; }
+        .chat-header { padding: 10px; background: var(--card); display: flex; align-items: center; border-bottom: 1px solid var(--border); }
+        .chat-msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: contain; }
+        .msg-bubble { padding: 8px 15px; border-radius: 12px; max-width: 75%; font-size: 0.95rem; line-height: 1.4; }
+        .msg-me { background: #056162; color: white; align-self: flex-end; border-top-right-radius: 0; }
+        .msg-them { background: #262d31; color: white; align-self: flex-start; border-top-left-radius: 0; }
+
+        /* CRIAR (UPLOAD & LIVE) */
+        .create-box { padding: 20px; max-width: 500px; margin: auto; width: 100%; }
+        .upload-area { border: 2px dashed var(--gold); padding: 30px; text-align: center; border-radius: 15px; cursor: pointer; margin: 15px 0; background: rgba(212, 175, 55, 0.05); }
+        .btn-live { background: #ff0000; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         
-        /* CHAT PRIVADO */
-        .chat-container { height: 400px; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
-        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 0.9rem; }
-        .bubble.me { background: var(--msg-me); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .bubble.them { background: #333; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
+        /* GERAL */
+        input, textarea, select { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border); background: #111; color: #fff; box-sizing: border-box; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        .avatar-main { width: 80px; height: 80px; border-radius: 50%; background: #333; margin: 0 auto 15px; border: 2px solid var(--gold); overflow: hidden; }
-        .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
+        .live-indicator { width: 10px; height: 10px; background: white; border-radius: 50%; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="auth-screen">
         <div class="auth-card">
-            <h1 style="color: var(--gold);">CERVANTES</h1>
-            <div class="avatar-main" onclick="document.getElementById('reg-pic').click()" style="cursor:pointer">
-                <img id="preview-pic" src="https://via.placeholder.com/150?text=Foto">
+            <h1 style="color: var(--gold); margin-bottom: 5px;">CERVANTES</h1>
+            <p style="font-size: 0.9rem; color: #888;">Registo de Conta Oficial</p>
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: #333; margin: 20px auto; border: 2px solid var(--gold); overflow: hidden; cursor: pointer;" onclick="document.getElementById('reg-file').click()">
+                <img id="reg-preview" src="https://via.placeholder.com/150?text=FOTO">
             </div>
-            <input type="file" id="reg-pic" style="display:none" onchange="previewFile(this)">
+            <input type="file" id="reg-file" hidden onchange="previewAvatar(this)">
             <input type="text" id="reg-nome" placeholder="Nome Completo">
-            <input type="text" id="reg-user" placeholder="@nome_de_utilizador">
-            <input type="email" id="reg-email" placeholder="E-mail">
-            <input type="password" id="reg-pass" placeholder="Código (Senha)">
-            <button onclick="fazerRegisto()">Criar Conta & Entrar</button>
+            <input type="text" id="reg-user" placeholder="Nome de Utilizador (@)">
+            <input type="password" id="reg-pass" placeholder="Código de Segurança">
+            <button class="btn-gold" onclick="entrarApp()">ENTRAR</button>
         </div>
     </div>
 
     <header>
-        <div style="font-weight: bold; color: var(--gold);">CERVANTES</div>
-        <div id="top-user-info" style="font-size: 0.8rem; display: flex; align-items: center; gap: 8px;"></div>
+        <div style="font-weight: bold; color: var(--gold); letter-spacing: 1px;">CERVANTES</div>
+        <div id="user-header" style="font-size: 0.8rem; opacity: 0.7;"></div>
     </header>
 
     <div class="wrapper">
         <nav>
-            <i class="active" onclick="tab('feed', this)">🏠</i>
+            <i class="active" onclick="tab('home', this)">🏠</i>
             <i onclick="tab('chats', this)">💬</i>
             <i onclick="tab('create', this)">➕</i>
             <i onclick="tab('channel', this)">📺</i>
@@ -74,85 +89,95 @@
         </nav>
 
         <main>
-            <section id="feed" class="section active-section">
-                <h2>Feed Global</h2>
-                <div id="feed-list"></div>
+            <section id="home" class="section active-section" style="padding: 20px;">
+                <h3 style="margin-top:0">Feed Global</h3>
+                <div id="feed-items"></div>
             </section>
 
             <section id="chats" class="section">
-                <h2>Mensagens Privadas</h2>
-                <div class="card">
-                    <input type="text" id="target-user" placeholder="Para: @nome_do_amigo">
-                    <div class="chat-container">
-                        <div class="chat-messages" id="chat-box">
-                            <div class="bubble them">Olá! Digita o nome de alguém e envia uma mensagem privada.</div>
+                <div style="padding: 15px; background: var(--card); border-bottom: 1px solid var(--border);">
+                    <h3 style="margin:0">Conversas</h3>
+                </div>
+                <div id="chats-list">
+                    <div class="chat-row" onclick="openPrivateChat('Equipa Cervantes', 'https://via.placeholder.com/100')">
+                        <div class="chat-avatar">🤖</div>
+                        <div class="chat-info">
+                            <h4>Equipa Cervantes</h4>
+                            <p>Bem-vindo ao suporte oficial!</p>
                         </div>
-                        <div style="display: flex; padding: 10px; gap: 5px; border-top: 1px solid var(--border);">
-                            <input type="text" id="msg-input" placeholder="Escreve aqui..." style="margin:0">
-                            <button onclick="enviarPrivado()" style="margin:0; width: auto; padding: 0 15px;">➤</button>
-                        </div>
+                    </div>
+                </div>
+
+                <div id="private-chat-view">
+                    <div class="chat-header">
+                        <button onclick="closePrivateChat()" style="background:none; border:none; color:var(--gold); font-size:1.5rem; cursor:pointer; margin-right:15px;">←</button>
+                        <div class="chat-avatar" style="width:40px; height:40px;"><img id="chat-target-pic" src=""></div>
+                        <strong id="chat-target-name">Nome</strong>
+                    </div>
+                    <div class="chat-msgs" id="chat-msgs-box"></div>
+                    <div style="padding:10px; background:var(--card); display:flex; gap:10px;">
+                        <input type="text" id="chat-input" placeholder="Mensagem" style="margin:0">
+                        <button class="btn-gold" style="width:auto; padding:0 15px;" onclick="sendPrivateMsg()">➤</button>
                     </div>
                 </div>
             </section>
 
             <section id="create" class="section">
-                <div class="card">
-                    <h2>Publicar no Canal</h2>
-                    <select id="p-type">
-                        <option value="video">🎥 Vídeo / Reel</option>
-                        <option value="foto">📸 Foto</option>
-                        <option value="texto">📝 Texto</option>
-                        <option value="story">⏳ História</option>
-                    </select>
-                    <textarea id="p-content" rows="4" placeholder="O que estás a pensar?"></textarea>
-                    <button onclick="publicar()">Publicar Agora</button>
+                <div class="create-box">
+                    <button class="btn-live" onclick="startLive()">
+                        <div class="live-indicator"></div> COMEÇAR LIVE AGORA
+                    </button>
+                    <div class="card">
+                        <h3>Publicar Ficheiro</h3>
+                        <div class="upload-area" onclick="document.getElementById('file-upload').click()">
+                            <p>📂 Clica aqui para abrir a <strong>Galeria</strong> ou <strong>Ficheiros</strong></p>
+                            <small>Sube Vídeos ou Fotos do teu telemóvel</small>
+                        </div>
+                        <input type="file" id="file-upload" hidden accept="image/*,video/*">
+                        <textarea id="pub-text" rows="3" placeholder="Legenda da publicação..."></textarea>
+                        <button class="btn-gold" onclick="publicarFicheiro()">PUBLICAR NO CANAL</button>
+                    </div>
                 </div>
             </section>
 
-            <section id="channel" class="section">
-                <div class="card" style="text-align: center;">
-                    <div class="avatar-main"><img id="profile-img" src=""></div>
-                    <h3 id="display-user-handle">@utilizador</h3>
-                    <button onclick="location.reload()" style="font-size:0.7rem; background:#333; color:white;">Terminar Sessão</button>
-                </div>
-                <h4>Minhas Publicações</h4>
-                <div id="my-list"></div>
+            <section id="channel" class="section" style="padding:20px;">
+                <div id="my-profile-header" style="text-align:center; margin-bottom:20px;"></div>
+                <h4>As minhas publicações</h4>
+                <div id="my-posts"></div>
             </section>
 
-            <section id="settings" class="section">
-                <h2>Definições</h2>
+            <section id="settings" class="section" style="padding:20px;">
                 <div class="card">
-                    <button onclick="document.body.classList.toggle('light-mode')">Mudar Tema (Claro/Escuro)</button>
-                    <select style="margin-top:20px;"><option>Português</option><option>English</option></select>
+                    <h3>Definições</h3>
+                    <button class="btn-gold" style="background:#333; color:white;" onclick="document.body.classList.toggle('light-mode')">🌓 Trocar Modo (Claro/Escuro)</button>
+                    <p>Idioma</p>
+                    <select><option>Português (PT)</option><option>English</option></select>
+                    <button class="btn-gold" style="background:#ff4444; color:white; margin-top:20px;" onclick="location.reload()">TERMINAR SESSÃO</button>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        let currentUser = null;
-        let posts = JSON.parse(localStorage.getItem('posts') || '[]');
-        let userPicBase64 = "";
+        let user = null;
+        let posts = JSON.parse(localStorage.getItem('cervantes_data') || '[]');
 
-        function previewFile(input) {
-            const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('preview-pic').src = e.target.result;
-                userPicBase64 = e.target.result;
-            };
-            reader.readAsDataURL(input.files[0]);
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => document.getElementById('reg-preview').src = e.target.result;
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
-        function fazerRegisto() {
+        function entrarApp() {
             const nome = document.getElementById('reg-nome').value;
-            const user = document.getElementById('reg-user').value;
-            if(!nome || !user) return alert("Nome e utilizador são obrigatórios!");
-            
-            currentUser = { nome, user, pic: userPicBase64 || 'https://via.placeholder.com/150' };
+            const handle = document.getElementById('reg-user').value;
+            if(!nome || !handle) return alert("Preencha o Nome e o Usuário!");
+
+            user = { nome, handle, pic: document.getElementById('reg-preview').src };
             document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('profile-img').src = currentUser.pic;
-            document.getElementById('display-user-handle').innerText = user;
-            document.getElementById('top-user-info').innerHTML = `<span>${nome}</span>`;
+            document.getElementById('user-header').innerText = `@${handle}`;
             render();
         }
 
@@ -161,57 +186,89 @@
             document.querySelectorAll('nav i').forEach(i => i.classList.remove('active'));
             document.getElementById(id).classList.add('active-section');
             el.classList.add('active');
+            if(id === 'chats') closePrivateChat();
         }
 
-        function enviarPrivado() {
-            const target = document.getElementById('target-user').value;
-            const msg = document.getElementById('msg-input').value;
-            const box = document.getElementById('chat-box');
-            if(!target || !msg) return alert("Preenche o destinatário e a mensagem!");
+        /* LOGICA WHATSAPP */
+        function openPrivateChat(name, pic) {
+            document.getElementById('private-chat-view').style.display = 'flex';
+            document.getElementById('chat-target-name').innerText = name;
+            document.getElementById('chat-target-pic').src = pic;
+        }
 
-            box.innerHTML += `<div class="bubble me"><strong>Para ${target}:</strong><br>${msg}</div>`;
-            document.getElementById('msg-input').value = "";
+        function closePrivateChat() {
+            document.getElementById('private-chat-view').style.display = 'none';
+        }
+
+        function sendPrivateMsg() {
+            const input = document.getElementById('chat-input');
+            const box = document.getElementById('chat-msgs-box');
+            if(!input.value) return;
+
+            box.innerHTML += `<div class="msg-bubble msg-me">${input.value}</div>`;
+            input.value = "";
             box.scrollTop = box.scrollHeight;
-            
+
             setTimeout(() => {
-                box.innerHTML += `<div class="bubble them">Mensagem enviada de forma privada para ${target}.</div>`;
+                box.innerHTML += `<div class="msg-bubble msg-them">Olá! Esta é uma resposta automática do Cervantes.</div>`;
                 box.scrollTop = box.scrollHeight;
             }, 1000);
         }
 
-        function publicar() {
-            const type = document.getElementById('p-type').value;
-            const text = document.getElementById('p-content').value;
-            if(!text) return alert("O conteúdo não pode estar vazio!");
+        /* LÓGICA LIVE & PUBLICAÇÃO */
+        function startLive() {
+            alert("A iniciar transmissão em direto...\nCâmara e Microfone ativos! 🔴");
+        }
 
-            posts.unshift({ id: Date.now(), type, text, user: currentUser.user, date: new Date().toLocaleString() });
-            localStorage.setItem('posts', JSON.stringify(posts));
-            document.getElementById('p-content').value = "";
+        function publicarFicheiro() {
+            const text = document.getElementById('pub-text').value;
+            const fileInput = document.getElementById('file-upload');
+            if(!text && !fileInput.files[0]) return alert("Adicione um ficheiro ou texto!");
+
+            const newPost = {
+                id: Date.now(),
+                user: user.handle,
+                text: text,
+                date: new Date().toLocaleString()
+            };
+
+            posts.unshift(newPost);
+            localStorage.setItem('cervantes_data', JSON.stringify(posts));
+            alert("Publicado com sucesso!");
+            document.getElementById('pub-text').value = "";
             render();
-            tab('feed', document.querySelector('nav i'));
+            tab('home', document.querySelector('nav i'));
+        }
+
+        function apagarPost(id) {
+            posts = posts.filter(p => p.id !== id);
+            localStorage.setItem('cervantes_data', JSON.stringify(posts));
+            render();
         }
 
         function render() {
-            const feed = document.getElementById('feed-list');
-            const canal = document.getElementById('my-list');
-            feed.innerHTML = ""; canal.innerHTML = "";
+            const feed = document.getElementById('feed-items');
+            const myPosts = document.getElementById('my-posts');
+            const profileHeader = document.getElementById('my-profile-header');
+            
+            feed.innerHTML = ""; myPosts.innerHTML = "";
+            profileHeader.innerHTML = `
+                <div class="chat-avatar" style="width:80px; height:80px; margin:0 auto;"><img src="${user.pic}"></div>
+                <h2>${user.nome}</h2><p>@${user.handle}</p>
+            `;
 
             posts.forEach(p => {
-                const html = `<div class="card" style="position:relative">
-                    ${p.user === currentUser?.user ? `<span style="position:absolute;top:10px;right:10px;color:red;cursor:pointer;font-size:0.7rem" onclick="apagar(${p.id})">Apagar</span>` : ''}
-                    <strong>${p.user}</strong> <small>• ${p.type}</small>
-                    <p>${p.text}</p>
-                    <small style="color:gray">${p.date}</small>
-                </div>`;
-                feed.innerHTML += html;
-                if(p.user === currentUser.user) canal.innerHTML += html;
+                const card = `
+                    <div class="card" style="position:relative">
+                        ${p.user === user.handle ? `<span style="position:absolute;top:10px;right:10px;color:red;cursor:pointer;font-size:0.7rem;" onclick="apagarPost(${p.id})">Apagar</span>` : ''}
+                        <strong>@${p.user}</strong><br>
+                        <p>${p.text}</p>
+                        <small style="color:gray">${p.date}</small>
+                    </div>
+                `;
+                feed.innerHTML += card;
+                if(p.user === user.handle) myPosts.innerHTML += card;
             });
-        }
-
-        function apagar(id) {
-            posts = posts.filter(p => p.id !== id);
-            localStorage.setItem('posts', JSON.stringify(posts));
-            render();
         }
     </script>
 </body>
