@@ -3,159 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | Super App Global</title>
+    <title>Cervantes | Creator Studio</title>
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --card: #121212; --green: #25d366; --text: #e0e0e0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        :root { --gold: #d4af37; --bg: #0b0b0b; --surface: #161616; --accent: #1e1e1e; --text-main: #ffffff; --text-dim: #a0a0a0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; display: flex; height: 100vh; }
 
-        /* SIDEBAR */
-        .sidebar { width: 240px; background: #000; border-right: 1px solid #222; display: flex; flex-direction: column; shrink: 0; }
-        .sidebar-header { padding: 25px; font-size: 1.5rem; color: var(--gold); font-weight: bold; border-bottom: 1px solid #222; text-align: center; }
-        .nav-item { padding: 12px 20px; color: #aaa; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; font-size: 0.95rem; }
-        .nav-item:hover, .nav-item.active { background: #111; color: var(--gold); border-left: 3px solid var(--gold); }
-        .nav-item i { font-style: normal; font-size: 1.2rem; }
+        /* Sidebar Profissional */
+        .sidebar { width: 260px; background: #000; border-right: 1px solid #222; display: flex; flex-direction: column; }
+        .logo { padding: 30px; font-size: 1.8rem; font-weight: 800; color: var(--gold); letter-spacing: -1px; }
+        .nav-group { flex-grow: 1; padding: 10px; }
+        .nav-item { padding: 14px 20px; color: var(--text-dim); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 15px; border-radius: 10px; transition: 0.2s; margin-bottom: 4px; }
+        .nav-item:hover, .nav-item.active { background: var(--accent); color: var(--gold); }
 
-        /* ÁREA DE CONTEÚDO */
-        .main { flex-grow: 1; overflow-y: auto; padding-bottom: 50px; scroll-behavior: smooth; }
-        .section { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
-        .section.active { display: block; }
+        /* Main Content */
+        .main { flex-grow: 1; overflow-y: auto; background: linear-gradient(180deg, #0f0f0f 0%, #0b0b0b 100%); }
+        .content-section { display: none; padding: 40px; animation: fadeIn 0.3s ease; }
+        .content-section.active { display: block; }
 
-        /* REELS / VÍDEOS (Estilo Mobile-First) */
-        .reels-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .reel-card { width: 100%; max-width: 350px; height: 600px; background: #000; border-radius: 15px; position: relative; overflow: hidden; border: 1px solid #333; }
-        .reel-video { width: 100%; height: 100%; object-fit: cover; }
-        .reel-overlay { position: absolute; bottom: 20px; left: 15px; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); }
-
-        /* CARDS GERAIS */
-        .card { background: var(--card); border: 1px solid #222; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        input, textarea, select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 8px; margin: 8px 0; box-sizing: border-box; }
-        .btn { background: var(--gold); color: black; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* Interface de Criação / Realismo */
+        .studio-card { background: var(--surface); border: 1px solid #282828; border-radius: 16px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .upload-zone { border: 2px dashed #444; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
+        .upload-zone:hover { border-color: var(--gold); background: rgba(212, 175, 55, 0.05); }
         
-        /* CHAT */
-        .chat-box { height: 300px; overflow-y: auto; background: #080808; border: 1px solid #222; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px; border-radius: 8px; max-width: 80%; font-size: 0.9rem; }
-        .msg.sent { background: var(--gold); color: black; align-self: flex-end; }
-        .msg.received { background: #333; align-self: flex-start; }
+        /* Inputs Realistas */
+        input, textarea, select { width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: white; border-radius: 10px; margin-top: 10px; font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--gold); }
+        .btn-primary { background: var(--gold); color: #000; border: none; padding: 16px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
+
+        /* Grid de Vídeos Profissional */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
+        .video-card { background: #000; border-radius: 12px; overflow: hidden; border: 1px solid #222; }
+        .thumb { width: 100%; aspect-ratio: 16/9; background: #1a1a1a; display: flex; align-items: center; justify-content: center; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-header">CERVANTES</div>
-    <div class="nav-item active" onclick="show('feed')"><i>🏠</i> Feed / Vídeos</div>
-    <div class="nav-item" onclick="show('reels')"><i>🎬</i> Reels</div>
-    <div class="nav-item" onclick="show('chat')"><i>💬</i> Mensagens / Grupos</div>
-    <div class="nav-item" onclick="show('ia')"><i>🤖</i> IA Developer</div>
-    <div class="nav-item" onclick="window.open('https://meet.jit.si/CervantesGlobal')"><i>📹</i> Chamada de Vídeo</div>
-    <div class="nav-item" onclick="show('config')"><i>⚙️</i> Configurações</div>
+    <div class="logo">CERVANTES</div>
+    <div class="nav-group">
+        <div class="nav-item active" onclick="switchTab('dashboard')">🏠 Dashboard</div>
+        <div class="nav-item" onclick="switchTab('meu-canal')">📺 Meu Canal</div>
+        <div class="nav-item" onclick="switchTab('criar')">➕ Criar Conteúdo</div>
+        <div class="nav-item" onclick="switchTab('analytics')">📈 Estatísticas</div>
+    </div>
 </div>
 
 <div class="main">
     
-    <div id="feed" class="section active">
-        <h2>Vídeos da Comunidade</h2>
-        <div class="card">
-            <video controls width="100%" style="border-radius: 8px;">
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-            </video>
-            <h3>Como criar a sua própria Super App em 2026</h3>
-            <p>@Cervantes_Admin • 1.2M visualizações</p>
-        </div>
+    <div id="dashboard" class="content-section active">
+        <h1>Bem-vindo, Criador</h1>
+        <div class="video-grid" id="mainFeed">
+            </div>
     </div>
 
-    <div id="reels" class="section">
-        <div class="reels-container">
-            <div class="reel-card">
-                <video class="reel-video" loop onclick="this.paused ? this.play() : this.pause()">
-                    <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
-                </video>
-                <div class="reel-overlay">
-                    <strong>@Utilizador_Pro</strong>
-                    <p>IA é o futuro! 🚀 #Cervantes #Angola</p>
+    <div id="criar" class="content-section">
+        <h1 style="margin-bottom: 10px;">Centro de Publicação</h1>
+        <p style="color: var(--text-dim); margin-bottom: 30px;">Escolha o formato do seu conteúdo global.</p>
+        
+        <div class="studio-card">
+            <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                <button class="btn-primary" onclick="setPostType('video')" style="flex:1">🎬 Vídeo / Reel</button>
+                <button class="btn-primary" onclick="setPostType('texto')" style="flex:1; background: #333; color: white;">📝 Artigo / Texto</button>
+                <button class="btn-primary" onclick="setPostType('historia')" style="flex:1; background: #333; color: white;">📸 História (Story)</button>
+            </div>
+
+            <div id="publishForm">
+                <label id="typeLabel">Título do Conteúdo</label>
+                <input type="text" id="postTitle" placeholder="Ex: A minha jornada em Luanda...">
+                
+                <div class="upload-zone" id="fileZone">
+                    <p>Arraste o ficheiro ou clique para selecionar</p>
+                    <small style="color: #666;">MP4, MOV ou JPG (Máx. 500MB)</small>
                 </div>
+
+                <textarea id="postDesc" rows="5" placeholder="Descrição ou conteúdo do texto..."></textarea>
+                
+                <button class="btn-primary" style="margin-top: 20px;" onclick="publicarConteudo()">🚀 Publicar Agora</button>
             </div>
         </div>
     </div>
 
-    <div id="chat" class="section">
-        <h2>Mensagens Privadas & Grupos</h2>
-        <div class="card">
-            <input type="text" id="destinatario" placeholder="Para: (Nome ou Número)">
-            <div class="chat-box" id="msgList">
-                <div class="msg received">Olá! Bem-vindo ao chat Cervantes.</div>
-            </div>
-            <div style="display: flex; gap: 5px;">
-                <input type="text" id="msgInput" placeholder="Escreve uma mensagem...">
-                <button onclick="enviarMensagem()" style="padding: 10px; background: var(--green); border:none; border-radius:8px; color:white; cursor:pointer;">➤</button>
-            </div>
-            <button class="btn" style="margin-top:10px; background: #333; color: white;" onclick="alert('Funcionalidade de Grupo Ativada!')">👥 Criar Nova Comunidade</button>
+    <div id="meu-canal" class="content-section">
+        <div style="height: 200px; background: #222; border-radius: 16px; margin-bottom: 60px; position: relative;">
+            <div style="width: 120px; height: 120px; background: var(--gold); border-radius: 50%; border: 5px solid var(--bg); position: absolute; bottom: -40px; left: 40px;"></div>
         </div>
-    </div>
-
-    <div id="ia" class="section">
-        <h2>🤖 Cervantes IA Developer</h2>
-        <div class="card">
-            <textarea id="iaPrompt" rows="4" placeholder="Cria um código para uma App de vendas em Python..."></textarea>
-            <button class="btn" onclick="askIA()">Gerar com Gemini 1.5</button>
-            <div id="iaResult" style="margin-top: 15px; color: #00ff00; font-family: monospace; white-space: pre-wrap;"></div>
-        </div>
+        <h1 id="userName">O Meu Canal</h1>
+        <div class="video-grid" id="userPosts">
+            </div>
     </div>
 
 </div>
 
 <script>
-    const KEY_IA = "AIzaSyC-RiddwgnZLD-VyWa9KeyxlTy0kJt1MoY";
+    let currentType = 'video';
 
-    function show(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    function switchTab(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        // Marcar item no menu
         event.currentTarget.classList.add('active');
     }
 
-    // LÓGICA DO CHAT (GUARDA NO NAVEGADOR)
-    function enviarMensagem() {
-        const input = document.getElementById('msgInput');
-        const list = document.getElementById('msgList');
-        if(!input.value) return;
-
-        const div = document.createElement('div');
-        div.className = 'msg sent';
-        div.innerText = input.value;
-        list.appendChild(div);
+    function setPostType(type) {
+        currentType = type;
+        const label = document.getElementById('typeLabel');
+        const zone = document.getElementById('fileZone');
         
-        // Simular resposta automática
-        setTimeout(() => {
-            const resp = document.createElement('div');
-            resp.className = 'msg received';
-            resp.innerText = "Mensagem recebida pelo servidor Cervantes.";
-            list.appendChild(resp);
-            list.scrollTop = list.scrollHeight;
-        }, 1000);
+        document.querySelectorAll('#criar .btn-primary').forEach(b => {
+            b.style.background = "#333"; b.style.color = "white";
+        });
+        event.currentTarget.style.background = "var(--gold)";
+        event.currentTarget.style.color = "black";
 
-        input.value = "";
-        list.scrollTop = list.scrollHeight;
+        if(type === 'texto') {
+            label.innerText = "Título do Artigo";
+            zone.style.display = "none";
+        } else if(type === 'historia') {
+            label.innerText = "Legenda da História";
+            zone.style.display = "block";
+            zone.querySelector('p').innerText = "Upload da Imagem/Vídeo Curto";
+        } else {
+            label.innerText = "Título do Vídeo";
+            zone.style.display = "block";
+        }
     }
 
-    // IA REAL
-    async function askIA() {
-        const p = document.getElementById('iaPrompt').value;
-        const res = document.getElementById('iaResult');
-        if(!p) return;
+    function publicarConteudo() {
+        const title = document.getElementById('postTitle').value;
+        const desc = document.getElementById('postDesc').value;
+        
+        if(!title) { alert("Por favor, insira um título."); return; }
 
-        res.innerText = "🤖 A processar o teu código global...";
-        try {
-            const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY_IA}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: p }] }] })
-            });
-            const d = await r.json();
-            res.innerText = d.candidates[0].content.parts[0].text;
-        } catch (e) {
-            res.innerText = "❌ Erro na Chave. Verifique se a chave está ativa no Google AI Studio.";
-        }
+        // Criação de Card Realista
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.innerHTML = `
+            <div class="thumb">${currentType === 'video' ? '🎬 [VIDEO]' : '📄 [TEXTO]'}</div>
+            <div style="padding: 15px;">
+                <h4 style="margin:0">${title}</h4>
+                <p style="color:#666; font-size:0.8rem; margin:5px 0;">Acabou de publicar no seu Canal</p>
+            </div>
+        `;
+
+        // Adiciona ao Feed e ao Canal
+        document.getElementById('mainFeed').prepend(card.cloneNode(true));
+        document.getElementById('userPosts').prepend(card);
+
+        alert("Conteúdo publicado com sucesso no Cervantes!");
+        
+        // Limpar campos
+        document.getElementById('postTitle').value = "";
+        document.getElementById('postDesc').value = "";
+        switchTab('meu-canal');
     }
 </script>
 
