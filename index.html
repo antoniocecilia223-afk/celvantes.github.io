@@ -5,196 +5,145 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cervantes | Super App</title>
     <style>
-        :root { --gold: #d4af37; --bg: #0b0b0b; --card: #1a1a1a; --text: #ffffff; --border: #2d2d2d; --wa-green: #00a884; --wa-bg: #0b141a; }
-        .light-mode { --bg: #f0f2f5; --card: #ffffff; --text: #111b21; --border: #ddd; --wa-green: #008069; --wa-bg: #efeae2; }
+        :root { --gold: #d4af37; --bg: #0b141a; --card: #111b21; --text: #e9edef; --wa-green: #00a884; --wa-msg-me: #005c4b; --wa-msg-them: #202c33; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-        /* REGISTO */
-        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 3000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--gold); width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-        /* NAVEGAÇÃO WHATSAPP */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card); border-bottom: 1px solid var(--border); color: var(--gold); font-weight: bold; font-size: 1.2rem; }
+        /* HEADER & NAV */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card); border-bottom: 1px solid #222; color: var(--gold); font-weight: bold; }
         .wrapper { display: flex; flex: 1; overflow: hidden; }
-        nav { width: 75px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 30px; }
-        nav i { font-style: normal; font-size: 1.7rem; cursor: pointer; color: #8696a0; transition: 0.3s; }
+        nav { width: 70px; background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 30px; border-right: 1px solid #222; }
+        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; color: #8696a0; }
         nav i.active { color: var(--gold); }
 
-        main { flex: 1; overflow-y: auto; position: relative; background: var(--bg); }
+        main { flex: 1; overflow-y: auto; position: relative; }
         .section { display: none; height: 100%; flex-direction: column; }
         .active-section { display: flex; }
 
-        /* STATUS / STORIES (ESTILO WA) */
-        .status-bar { display: flex; gap: 15px; padding: 15px; overflow-x: auto; border-bottom: 1px solid var(--border); background: var(--card); }
-        .status-item { min-width: 60px; text-align: center; cursor: pointer; }
-        .status-circle { width: 55px; height: 55px; border-radius: 50%; border: 3px solid var(--wa-green); padding: 2px; margin-bottom: 5px; }
-        .status-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .status-item span { font-size: 0.7rem; color: #8696a0; }
+        /* SISTEMA DE CHAT & CHAMADA */
+        #wa-chat-window { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0b141a; display: none; flex-direction: column; z-index: 500; }
+        .wa-header { padding: 10px 15px; background: var(--card); display: flex; align-items: center; gap: 12px; }
+        .call-icons { margin-left: auto; display: flex; gap: 20px; color: var(--gold); font-size: 1.2rem; cursor: pointer; }
+        
+        /* TELA DE CHAMADA */
+        #call-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #075e54; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: space-around; padding: 50px 0; }
+        .call-avatar { width: 150px; height: 150px; border-radius: 50%; border: 3px solid white; overflow: hidden; }
+        .call-btns { display: flex; gap: 50px; }
+        .btn-call { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; color: white; border: none; }
 
-        /* LISTA DE CONVERSAS */
-        .chat-list-item { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .chat-list-item:hover { background: rgba(255,255,255,0.05); }
-        .avatar-circle { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; margin-right: 15px; background: #333; }
-        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .chat-details { flex: 1; border-bottom: 0.1px solid rgba(134, 150, 160, 0.15); padding-bottom: 10px; }
-        .chat-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .chat-top h4 { margin: 0; font-size: 1rem; font-weight: 500; }
-        .chat-top span { font-size: 0.75rem; color: #8696a0; }
-        .chat-msg-preview { font-size: 0.85rem; color: #8696a0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+        /* LIVE REAL */
+        #live-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 1500; display: none; }
+        video#live-video { width: 100%; height: 100%; object-fit: cover; }
+        .live-overlay { position: absolute; top: 20px; left: 20px; display: flex; gap: 10px; }
+        .live-badge { background: red; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; }
 
-        /* JANELA DE CHAT (WHATSAPP REAL) */
-        #wa-chat-window { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--wa-bg); display: none; flex-direction: column; z-index: 500; }
-        .wa-chat-header { padding: 10px 15px; background: var(--card); display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
-        .wa-chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; }
-        .wa-bubble { padding: 8px 12px; border-radius: 8px; max-width: 80%; font-size: 0.95rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.2); }
-        .wa-me { background: #005c4b; color: #e9edef; align-self: flex-end; border-top-right-radius: 0; }
-        .wa-them { background: #202c33; color: #e9edef; align-self: flex-start; border-top-left-radius: 0; }
-        .wa-time { font-size: 0.65rem; color: rgba(233, 237, 239, 0.6); display: block; text-align: right; margin-top: 4px; }
+        /* REGISTO */
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 3000; display: flex; align-items: center; justify-content: center; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; border: 1px solid var(--gold); width: 85%; max-width: 350px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #2a3942; border: none; border-radius: 8px; color: white; }
+        button { background: var(--gold); border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* BARRA DE INPUT WA */
-        .wa-input-bar { padding: 10px 15px; background: var(--card); display: flex; align-items: center; gap: 10px; }
-        .wa-input-bar input { flex: 1; background: #2a3942; border: none; padding: 12px 15px; border-radius: 25px; color: white; outline: none; }
-
-        /* BOTÕES E CARDS GERAIS */
-        .card { background: var(--card); border-radius: 12px; padding: 15px; margin: 15px; border: 1px solid var(--border); }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
-        .btn-live { background: #ea0038; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
-
-        /* UPLOAD GALERIA */
-        .gallery-drop { border: 2px dashed #444; padding: 30px; text-align: center; border-radius: 15px; color: #8696a0; cursor: pointer; background: rgba(255,255,255,0.02); }
+        .msg-box { flex: 1; padding: 20px; overflow-y: auto; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
+        .bubble { padding: 10px; margin: 5px 0; border-radius: 10px; max-width: 80%; }
+        .me { background: var(--wa-msg-me); align-self: flex-end; }
+        .them { background: var(--wa-msg-them); align-self: flex-start; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen">
         <div class="auth-card">
-            <h1 style="color: var(--gold);">CERVANTES</h1>
-            <div style="width: 90px; height: 90px; border-radius: 50%; background: #222; margin: 0 auto 20px; border: 2px solid var(--gold); overflow: hidden; cursor: pointer;" onclick="document.getElementById('reg-pic').click()">
-                <img id="reg-preview" src="https://via.placeholder.com/150?text=FOTO" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-            <input type="file" id="reg-pic" hidden accept="image/*" onchange="previewAuth(this)">
-            <input type="text" id="reg-nome" placeholder="Nome Completo">
-            <input type="text" id="reg-user" placeholder="Nome de Utilizador (@)">
-            <input type="password" id="reg-pass" placeholder="Código de Segurança">
-            <button class="btn-gold" onclick="iniciar()">CRIAR CONTA</button>
+            <h2 style="color:var(--gold)">CERVANTES</h2>
+            <input type="text" id="reg-user" placeholder="@nome_utilizador">
+            <button onclick="iniciarApp()">ENTRAR AGORA</button>
+        </div>
+    </div>
+
+    <div id="live-view">
+        <div class="live-overlay">
+            <div class="live-badge">AO VIVO</div>
+            <div id="live-timer" style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;">00:00</div>
+        </div>
+        <video id="live-video" autoplay playsinline></video>
+        <button onclick="stopLive()" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); width:auto; background:red;">ENCERRAR LIVE</button>
+    </div>
+
+    <div id="call-screen">
+        <div style="text-align: center;">
+            <div class="call-avatar"><img src="https://via.placeholder.com/150" style="width:100%"></div>
+            <h2 id="call-name" style="margin-top:20px;">Utilizador</h2>
+            <p>A chamar...</p>
+        </div>
+        <div class="call-btns">
+            <button class="btn-call" style="background:#ff4444;" onclick="endCall()">✖</button>
+            <button class="btn-call" style="background:var(--wa-green);" onclick="alert('Chamada Atendida!')">✔</button>
         </div>
     </div>
 
     <header>
         <div>CERVANTES</div>
-        <div id="top-user" style="font-size: 0.8rem; font-weight: normal; color: #8696a0;"></div>
+        <div id="status-user"></div>
     </header>
 
     <div class="wrapper">
         <nav>
-            <i class="active" onclick="tab('feed', this)">🏠</i>
+            <i class="active" onclick="tab('home', this)">🏠</i>
             <i onclick="tab('chats', this)">💬</i>
             <i onclick="tab('create', this)">➕</i>
             <i onclick="tab('channel', this)">📺</i>
-            <i onclick="tab('settings', this)">⚙️</i>
         </nav>
 
         <main>
-            <section id="feed" class="section active-section">
-                <div id="feed-container" style="padding: 10px;"></div>
+            <section id="home" class="section active-section" style="padding:20px;">
+                <h3>Novidades</h3>
+                <div id="feed-content"></div>
             </section>
 
             <section id="chats" class="section">
-                <div class="status-bar">
-                    <div class="status-item">
-                        <div class="status-circle" style="border-color: #8696a0;"><img id="my-status-img" src=""></div>
-                        <span>O meu</span>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-circle"><img src="https://via.placeholder.com/100?text=IA"></div>
-                        <span>Cervantes</span>
-                    </div>
+                <div style="padding:15px; background:var(--card);">
+                    <input type="text" id="search-user" placeholder="Pesquisar @utilizador para DM..." style="margin:0">
                 </div>
-                <div id="wa-list">
-                    <div class="chat-list-item" onclick="abrirChat('Suporte Cervantes', '🤖')">
-                        <div class="avatar-circle">🤖</div>
-                        <div class="details">
-                            <div class="chat-top"><h4>Suporte Cervantes</h4> <span>20:45</span></div>
-                            <div class="chat-msg-preview">Olá! Como podemos ajudar hoje?</div>
-                        </div>
+                <div id="wa-list" style="flex:1">
+                    <div class="chat-item" style="padding:15px; display:flex; gap:10px; cursor:pointer;" onclick="abrirChat('Suporte Cervantes')">
+                        <div style="width:50px; height:50px; background:#444; border-radius:50%"></div>
+                        <div><strong>Suporte Cervantes</strong><br><small>Olá! Como posso ajudar?</small></div>
                     </div>
                 </div>
 
                 <div id="wa-chat-window">
-                    <div class="wa-chat-header">
-                        <button onclick="fecharChat()" style="background:none; border:none; color:var(--gold); font-size:1.5rem;">←</button>
-                        <div class="avatar-circle" style="width:35px; height:35px;"><img id="wa-target-pic" src=""></div>
-                        <strong id="wa-target-name">Nome</strong>
-                    </div>
-                    <div class="wa-chat-body" id="wa-body">
-                        <div class="wa-bubble wa-them">Bem-vindo ao chat privado encriptado do Cervantes. <span class="wa-time">20:46</span></div>
-                    </div>
-                    <div class="wa-input-bar">
-                        <input type="text" id="wa-input" placeholder="Mensagem">
-                        <button class="btn-gold" style="width:auto; border-radius:50%; width:45px; height:45px;" onclick="enviarMensagemWA()">➤</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="create" class="section">
-                <div style="padding: 20px;">
-                    <button class="btn-live" onclick="alert('🔴 Live iniciada! A tua audiência está a entrar...')">
-                        <span style="width:10px; height:10px; background:white; border-radius:50%;"></span> EM DIRETO
-                    </button>
-                    <div class="card">
-                        <h3>Carregar da Galeria</h3>
-                        <div class="gallery-drop" onclick="document.getElementById('galeria-input').click()">
-                            <p>📸 Clica para escolher <strong>Fotos</strong> ou <strong>Vídeos</strong></p>
-                            <small>Acesso aos ficheiros do telemóvel</small>
+                    <div class="wa-header">
+                        <span onclick="fecharChat()" style="cursor:pointer">←</span>
+                        <strong id="chat-title">Nome</strong>
+                        <div class="call-icons">
+                            <span onclick="startCall('Voz')">📞</span>
+                            <span onclick="startCall('Vídeo')">📹</span>
                         </div>
-                        <input type="file" id="galeria-input" hidden accept="image/*,video/*">
-                        <textarea id="pub-legenda" placeholder="Escreve uma legenda..." style="margin-top:15px;"></textarea>
-                        <button class="btn-gold" style="margin-top:10px;" onclick="publicarDoTelemovel()">PUBLICAR NO CANAL</button>
+                    </div>
+                    <div class="msg-box" id="msg-box" style="display:flex; flex-direction:column;"></div>
+                    <div style="padding:10px; background:var(--card); display:flex; gap:10px;">
+                        <input type="text" id="chat-in" placeholder="Mensagem" style="margin:0">
+                        <button onclick="enviarDM()" style="width:auto; margin:0">➤</button>
                     </div>
                 </div>
             </section>
 
-            <section id="channel" class="section" style="padding: 20px;">
-                <div id="header-canal" style="text-align:center;"></div>
-                <hr style="border:0.5px solid var(--border); margin: 20px 0;">
-                <div id="meus-posts-container"></div>
-            </section>
-
-            <section id="settings" class="section" style="padding: 20px;">
-                <div class="card">
-                    <h3>Configurações</h3>
-                    <button class="btn-gold" style="background:#333; color:white;" onclick="document.body.classList.toggle('light-mode')">🌓 Alternar Tema</button>
-                    <p>Idioma</p>
-                    <select><option>Português</option><option>English</option></select>
-                    <button class="btn-gold" style="background:#ff4444; color:white; margin-top:20px;" onclick="location.reload()">SAIR DA CONTA</button>
+            <section id="create" class="section" style="padding:20px;">
+                <button onclick="startLive()" style="background:red; padding:20px; font-weight:bold; border-radius:12px; color:white; border:none; cursor:pointer;">🔴 INICIAR TRANSMISSÃO AO VIVO</button>
+                <div style="margin-top:20px; border: 2px dashed #444; padding:30px; text-align:center; border-radius:15px;" onclick="alert('Galeria Aberta')">
+                    📸 Carregar da Galeria (Fotos/Vídeos)
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        let me = null;
-        let posts = JSON.parse(localStorage.getItem('cervantes_v3') || '[]');
+        let me = "";
+        let stream = null;
 
-        function previewAuth(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => document.getElementById('reg-preview').src = e.target.result;
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function iniciar() {
-            const nome = document.getElementById('reg-nome').value;
-            const handle = document.getElementById('reg-user').value;
-            if(!nome || !handle) return alert("Preenche os campos!");
-            
-            me = { nome, handle, pic: document.getElementById('reg-preview').src };
+        function iniciarApp() {
+            me = document.getElementById('reg-user').value;
+            if(!me) return alert("Insere o teu @");
             document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('top-user').innerText = `@${handle}`;
-            document.getElementById('my-status-img').src = me.pic;
-            render();
+            document.getElementById('status-user').innerText = me;
         }
 
         function tab(id, el) {
@@ -202,73 +151,56 @@
             document.querySelectorAll('nav i').forEach(i => i.classList.remove('active'));
             document.getElementById(id).classList.add('active-section');
             el.classList.add('active');
-            if(id !== 'chats') fecharChat();
         }
 
-        /* CHAT WHATSAPP */
-        function abrirChat(nome, pic) {
+        /* LÓGICA LIVE */
+        async function startLive() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('live-video').srcObject = stream;
+                document.getElementById('live-view').style.display = 'block';
+                // Iniciar cronómetro
+                let sec = 0;
+                setInterval(() => {
+                    sec++;
+                    let m = Math.floor(sec/60);
+                    let s = sec%60;
+                    document.getElementById('live-timer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                }, 1000);
+            } catch (err) {
+                alert("Erro ao abrir a câmara: " + err);
+            }
+        }
+
+        function stopLive() {
+            if(stream) stream.getTracks().forEach(track => track.stop());
+            document.getElementById('live-view').style.display = 'none';
+        }
+
+        /* LÓGICA CHAT & CHAMADA */
+        function abrirChat(nome) {
             document.getElementById('wa-chat-window').style.display = 'flex';
-            document.getElementById('wa-target-name').innerText = nome;
-            document.getElementById('wa-target-pic').src = (pic === '🤖') ? 'https://via.placeholder.com/100?text=IA' : pic;
+            document.getElementById('chat-title').innerText = nome;
         }
 
         function fecharChat() { document.getElementById('wa-chat-window').style.display = 'none'; }
 
-        function enviarMensagemWA() {
-            const input = document.getElementById('wa-input');
-            const body = document.getElementById('wa-body');
-            if(!input.value) return;
-
-            const agora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            body.innerHTML += `<div class="wa-bubble wa-me">${input.value} <span class="wa-time">${agora}</span></div>`;
-            input.value = "";
-            body.scrollTop = body.scrollHeight;
-
-            setTimeout(() => {
-                body.innerHTML += `<div class="wa-bubble wa-them">Mensagem recebida e encriptada. <span class="wa-time">${agora}</span></div>`;
-                body.scrollTop = body.scrollHeight;
-            }, 1000);
+        function startCall(tipo) {
+            document.getElementById('call-name').innerText = document.getElementById('chat-title').innerText;
+            document.getElementById('call-screen').style.display = 'flex';
+            // Som de chamada simulado
+            console.log("A tocar chamada de " + tipo);
         }
 
-        /* CANAL E POSTS */
-        function publicarDoTelemovel() {
-            const txt = document.getElementById('pub-legenda').value;
-            if(!txt) return alert("Escreve algo para publicar!");
+        function endCall() { document.getElementById('call-screen').style.display = 'none'; }
 
-            posts.unshift({ id: Date.now(), user: me.handle, text: txt, date: new Date().toLocaleString() });
-            localStorage.setItem('cervantes_v3', JSON.stringify(posts));
-            document.getElementById('pub-legenda').value = "";
-            alert("Publicado no teu Canal!");
-            render();
-            tab('feed', document.querySelector('nav i'));
-        }
-
-        function apagar(id) {
-            posts = posts.filter(p => p.id !== id);
-            localStorage.setItem('cervantes_v3', JSON.stringify(posts));
-            render();
-        }
-
-        function render() {
-            const feed = document.getElementById('feed-container');
-            const meuCanal = document.getElementById('meus-posts-container');
-            const headerCanal = document.getElementById('header-canal');
-            
-            feed.innerHTML = ""; meuCanal.innerHTML = "";
-            headerCanal.innerHTML = `<img src="${me.pic}" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--gold); object-fit:cover;">
-                                     <h2>${me.nome}</h2><p style="color:#8696a0">@${me.handle}</p>`;
-
-            posts.forEach(p => {
-                const item = `
-                    <div class="card" style="position:relative">
-                        ${p.user === me.handle ? `<span onclick="apagar(${p.id})" style="position:absolute;top:10px;right:15px;color:#ff4444;font-size:0.8rem;cursor:pointer;">Apagar</span>` : ''}
-                        <strong>@${p.user}</strong>
-                        <p style="margin: 10px 0;">${p.text}</p>
-                        <small style="color:#8696a0; font-size:0.7rem;">${p.date}</small>
-                    </div>`;
-                feed.innerHTML += item;
-                if(p.user === me.handle) meuCanal.innerHTML += item;
-            });
+        function enviarDM() {
+            const val = document.getElementById('chat-in').value;
+            const box = document.getElementById('msg-box');
+            if(!val) return;
+            box.innerHTML += `<div class="bubble me">${val}</div>`;
+            document.getElementById('chat-in').value = "";
+            box.scrollTop = box.scrollHeight;
         }
     </script>
 </body>
