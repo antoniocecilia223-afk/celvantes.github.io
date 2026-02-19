@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cervantes | Super App</title>
     <style>
-        /* VARIÁVEIS DE CORES */
-        :root { --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; --border: #333; }
-        .light-mode { --bg: #f5f5f5; --card: #ffffff; --text: #1a1a1a; --border: #ddd; }
+        :root { --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; --border: #333; --msg-me: #d4af37; }
+        .light-mode { --bg: #f5f5f5; --card: #ffffff; --text: #1a1a1a; --border: #ddd; --msg-me: #ffd700; }
 
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; height: 100vh; display: flex; flex-direction: column; }
 
-        /* TELA DE REGISTO / LOGIN */
-        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        /* ECRÃ DE REGISTO */
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
         .auth-card { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--gold); width: 90%; max-width: 400px; text-align: center; }
 
-        /* LAYOUT PRINCIPAL */
+        /* NAVEGAÇÃO E LAYOUT */
         header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--border); background: var(--bg); }
         .wrapper { display: flex; flex: 1; overflow: hidden; }
-        nav { width: 70px; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 30px; }
+        nav { width: 70px; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 30px; }
         nav i { font-style: normal; font-size: 1.5rem; cursor: pointer; color: #888; }
         nav i.active { color: var(--gold); }
 
@@ -26,36 +25,43 @@
         .section { display: none; max-width: 600px; margin: 0 auto; }
         .active-section { display: block; }
 
-        /* COMPONENTES */
+        /* ESTILO DOS COMPONENTES */
         .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 15px; margin-bottom: 20px; }
         input, select, textarea { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border); background: #000; color: #fff; box-sizing: border-box; }
         .light-mode input { background: #fff; color: #000; }
-        button { background: var(--gold); border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        button { background: var(--gold); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; color: #000; }
         
-        /* POSTS */
-        .post { position: relative; }
-        .del-btn { position: absolute; top: 10px; right: 10px; color: #ff4444; cursor: pointer; font-size: 0.8rem; border: 1px solid #ff4444; padding: 2px 5px; border-radius: 4px; }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; background: #333; margin: 0 auto 10px; overflow: hidden; border: 2px solid var(--gold); }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        /* CHAT PRIVADO */
+        .chat-container { height: 400px; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 0.9rem; }
+        .bubble.me { background: var(--msg-me); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .bubble.them { background: #333; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
+
+        .avatar-main { width: 80px; height: 80px; border-radius: 50%; background: #333; margin: 0 auto 15px; border: 2px solid var(--gold); overflow: hidden; }
+        .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
     <div id="auth-screen">
         <div class="auth-card">
             <h1 style="color: var(--gold);">CERVANTES</h1>
-            <p>Cria a tua conta independente</p>
+            <div class="avatar-main" onclick="document.getElementById('reg-pic').click()" style="cursor:pointer">
+                <img id="preview-pic" src="https://via.placeholder.com/150?text=Foto">
+            </div>
+            <input type="file" id="reg-pic" style="display:none" onchange="previewFile(this)">
             <input type="text" id="reg-nome" placeholder="Nome Completo">
             <input type="text" id="reg-user" placeholder="@nome_de_utilizador">
             <input type="email" id="reg-email" placeholder="E-mail">
             <input type="password" id="reg-pass" placeholder="Código (Senha)">
-            <button onclick="fazerRegisto()">Entrar no Cervantes</button>
+            <button onclick="fazerRegisto()">Criar Conta & Entrar</button>
         </div>
     </div>
 
     <header>
         <div style="font-weight: bold; color: var(--gold);">CERVANTES</div>
-        <div id="user-display" style="font-size: 0.8rem;"></div>
+        <div id="top-user-info" style="font-size: 0.8rem; display: flex; align-items: center; gap: 8px;"></div>
     </header>
 
     <div class="wrapper">
@@ -69,27 +75,34 @@
 
         <main>
             <section id="feed" class="section active-section">
-                <h2>Feed Principal</h2>
+                <h2>Feed Global</h2>
                 <div id="feed-list"></div>
             </section>
 
             <section id="chats" class="section">
-                <h2>Conversas & Grupos</h2>
-                <button onclick="alert('Criar Comunidade...')">👥 Criar Nova Comunidade</button>
-                <div class="card" style="margin-top:20px;">
-                    <strong>@Equipa_Cervantes</strong>
-                    <p>Bem-vindo ao teu novo espaço!</p>
+                <h2>Mensagens Privadas</h2>
+                <div class="card">
+                    <input type="text" id="target-user" placeholder="Para: @nome_do_amigo">
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-box">
+                            <div class="bubble them">Olá! Digita o nome de alguém e envia uma mensagem privada.</div>
+                        </div>
+                        <div style="display: flex; padding: 10px; gap: 5px; border-top: 1px solid var(--border);">
+                            <input type="text" id="msg-input" placeholder="Escreve aqui..." style="margin:0">
+                            <button onclick="enviarPrivado()" style="margin:0; width: auto; padding: 0 15px;">➤</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <section id="create" class="section">
                 <div class="card">
-                    <h2>Publicar Conteúdo</h2>
+                    <h2>Publicar no Canal</h2>
                     <select id="p-type">
                         <option value="video">🎥 Vídeo / Reel</option>
                         <option value="foto">📸 Foto</option>
-                        <option value="texto">📝 Texto / Facebook Style</option>
-                        <option value="story">⏳ História (Story)</option>
+                        <option value="texto">📝 Texto</option>
+                        <option value="story">⏳ História</option>
                     </select>
                     <textarea id="p-content" rows="4" placeholder="O que estás a pensar?"></textarea>
                     <button onclick="publicar()">Publicar Agora</button>
@@ -98,10 +111,9 @@
 
             <section id="channel" class="section">
                 <div class="card" style="text-align: center;">
-                    <div class="avatar"><img id="pic" src="https://via.placeholder.com/150"></div>
-                    <h3 id="display-username">@utilizador</h3>
-                    <input type="file" id="file-pic" style="display:none" onchange="changePic(this)">
-                    <button onclick="document.getElementById('file-pic').click()" style="font-size:0.7rem;">Mudar Foto</button>
+                    <div class="avatar-main"><img id="profile-img" src=""></div>
+                    <h3 id="display-user-handle">@utilizador</h3>
+                    <button onclick="location.reload()" style="font-size:0.7rem; background:#333; color:white;">Terminar Sessão</button>
                 </div>
                 <h4>Minhas Publicações</h4>
                 <div id="my-list"></div>
@@ -110,11 +122,8 @@
             <section id="settings" class="section">
                 <h2>Definições</h2>
                 <div class="card">
-                    <p>Modo Escuro / Claro</p>
-                    <button onclick="document.body.classList.toggle('light-mode')">Trocar Tema</button>
-                    <p>Língua</p>
-                    <select><option>Português</option><option>English</option></select>
-                    <button class="btn-danger" style="background:#ff4444; color:white; margin-top:30px;" onclick="location.reload()">Terminar Sessão</button>
+                    <button onclick="document.body.classList.toggle('light-mode')">Mudar Tema (Claro/Escuro)</button>
+                    <select style="margin-top:20px;"><option>Português</option><option>English</option></select>
                 </div>
             </section>
         </main>
@@ -123,16 +132,27 @@
     <script>
         let currentUser = null;
         let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+        let userPicBase64 = "";
+
+        function previewFile(input) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('preview-pic').src = e.target.result;
+                userPicBase64 = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
 
         function fazerRegisto() {
             const nome = document.getElementById('reg-nome').value;
             const user = document.getElementById('reg-user').value;
-            if(!nome || !user) return alert("Preenche os dados!");
+            if(!nome || !user) return alert("Nome e utilizador são obrigatórios!");
             
-            currentUser = { nome, user };
+            currentUser = { nome, user, pic: userPicBase64 || 'https://via.placeholder.com/150' };
             document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('user-display').innerText = nome;
-            document.getElementById('display-username').innerText = user;
+            document.getElementById('profile-img').src = currentUser.pic;
+            document.getElementById('display-user-handle').innerText = user;
+            document.getElementById('top-user-info').innerHTML = `<span>${nome}</span>`;
             render();
         }
 
@@ -143,18 +163,26 @@
             el.classList.add('active');
         }
 
-        function changePic(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => document.getElementById('pic').src = e.target.result;
-                reader.readAsDataURL(input.files[0]);
-            }
+        function enviarPrivado() {
+            const target = document.getElementById('target-user').value;
+            const msg = document.getElementById('msg-input').value;
+            const box = document.getElementById('chat-box');
+            if(!target || !msg) return alert("Preenche o destinatário e a mensagem!");
+
+            box.innerHTML += `<div class="bubble me"><strong>Para ${target}:</strong><br>${msg}</div>`;
+            document.getElementById('msg-input').value = "";
+            box.scrollTop = box.scrollHeight;
+            
+            setTimeout(() => {
+                box.innerHTML += `<div class="bubble them">Mensagem enviada de forma privada para ${target}.</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 1000);
         }
 
         function publicar() {
             const type = document.getElementById('p-type').value;
             const text = document.getElementById('p-content').value;
-            if(!text) return alert("Escreve algo!");
+            if(!text) return alert("O conteúdo não pode estar vazio!");
 
             posts.unshift({ id: Date.now(), type, text, user: currentUser.user, date: new Date().toLocaleString() });
             localStorage.setItem('posts', JSON.stringify(posts));
@@ -163,28 +191,27 @@
             tab('feed', document.querySelector('nav i'));
         }
 
-        function apagar(id) {
-            posts = posts.filter(p => p.id !== id);
-            localStorage.setItem('posts', JSON.stringify(posts));
-            render();
-        }
-
         function render() {
             const feed = document.getElementById('feed-list');
             const canal = document.getElementById('my-list');
             feed.innerHTML = ""; canal.innerHTML = "";
 
             posts.forEach(p => {
-                const html = `
-                    <div class="card post">
-                        ${p.user === currentUser?.user ? `<span class="del-btn" onclick="apagar(${p.id})">Apagar</span>` : ''}
-                        <strong>${p.user}</strong> <small>• ${p.type}</small>
-                        <p>${p.text}</p>
-                        <small style="color:gray">${p.date}</small>
-                    </div>`;
+                const html = `<div class="card" style="position:relative">
+                    ${p.user === currentUser?.user ? `<span style="position:absolute;top:10px;right:10px;color:red;cursor:pointer;font-size:0.7rem" onclick="apagar(${p.id})">Apagar</span>` : ''}
+                    <strong>${p.user}</strong> <small>• ${p.type}</small>
+                    <p>${p.text}</p>
+                    <small style="color:gray">${p.date}</small>
+                </div>`;
                 feed.innerHTML += html;
                 if(p.user === currentUser.user) canal.innerHTML += html;
             });
+        }
+
+        function apagar(id) {
+            posts = posts.filter(p => p.id !== id);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            render();
         }
     </script>
 </body>
