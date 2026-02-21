@@ -3,153 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | Super App</title>
+    <title>Cervantes AI | Super App</title>
     <style>
-        :root { --gold: #d4af37; --bg: #0b141a; --card: #111b21; --text: #e9edef; --wa-green: #00a884; }
-        .light-mode { --bg: #f0f2f5; --card: #ffffff; --text: #111b21; }
+        :root { --gold: #d4af37; --bg: #050505; --card: #121212; --text: #ffffff; --wa-green: #00a884; }
+        .light-mode { --bg: #ffffff; --card: #f0f2f5; --text: #1c1e21; }
         
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; transition: 0.3s; }
+        body { font-family: 'Segoe UI', system-ui; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; transition: 0.5s; }
 
-        /* HEADER & NAV */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card); border-bottom: 1px solid #222; }
-        .logo { color: var(--gold); font-weight: bold; font-size: 1.3rem; }
+        /* LOGIN INTELIGENTE */
+        #smart-auth { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .auth-box { background: var(--card); padding: 40px; border-radius: 25px; border: 1px solid var(--gold); text-align: center; width: 320px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
         
-        .wrapper { display: flex; flex: 1; overflow: hidden; }
-        nav { width: 70px; background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 25px; border-right: 1px solid #222; }
-        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; color: #8696a0; }
-        nav i.active { color: var(--gold); }
+        /* INTERFACE */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: rgba(0,0,0,0.8); border-bottom: 1px solid #222; sticky: top; }
+        .wrapper { display: flex; flex: 1; height: calc(100vh - 65px); }
+        nav { width: 75px; background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 35px; }
+        nav i { font-style: normal; font-size: 1.8rem; cursor: pointer; opacity: 0.5; transition: 0.3s; }
+        nav i.active { opacity: 1; color: var(--gold); transform: scale(1.2); }
 
-        main { flex: 1; overflow-y: auto; position: relative; }
-        .section { display: none; height: 100%; flex-direction: column; }
-        .active-section { display: flex; }
+        main { flex: 1; overflow-y: auto; padding-bottom: 50px; scroll-behavior: smooth; }
+        .section { display: none; padding: 20px; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active-section { display: block; }
 
-        /* REELS (SCROLL VERTICAL) */
-        .reels-container { height: 100%; overflow-y: scroll; snap-type: y mandatory; }
-        .reel-video { height: 100%; width: 100%; snap-align: start; background: #000; position: relative; display: flex; align-items: center; justify-content: center; }
-        .reel-info { position: absolute; bottom: 80px; left: 20px; text-shadow: 1px 1px 5px #000; }
+        /* SMART CARDS */
+        .card { background: var(--card); border-radius: 18px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .card:hover { border-color: var(--gold); }
+        
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #333; background: #000; color: #fff; outline: none; }
+        button { background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s; }
+        button:active { transform: scale(0.95); }
 
-        /* CHATS & STATUS (WHATSAPP STYLE) */
-        .status-bar { display: flex; gap: 15px; padding: 15px; overflow-x: auto; background: var(--card); border-bottom: 1px solid #222; }
-        .status-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--wa-green); padding: 2px; }
-        .status-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-
-        /* LIVE & CHAMADAS */
-        #live-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; }
-        #call-ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #075e54; z-index: 2100; display: none; flex-direction: column; align-items: center; justify-content: center; }
-
-        /* INTERFACE GERAL */
-        .card { background: var(--card); border-radius: 12px; padding: 15px; margin: 15px; border: 1px solid #333; }
-        button { background: var(--gold); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: #000; margin-top: 10px; }
-        .btn-live { background: #ff0000; color: #fff; margin-bottom: 20px; }
+        /* LIVE & CALLS */
+        #video-engine { position: fixed; inset: 0; background: #000; z-index: 4000; display: none; }
+        .live-label { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 15px; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
-    <div id="auth-screen" style="position:fixed; inset:0; background:var(--bg); z-index:3000; display:flex; align-items:center; justify-content:center;">
-        <div class="card" style="width:300px; text-align:center;">
-            <h1 style="color:var(--gold)">CERVANTES</h1>
-            <input type="text" id="reg-user" placeholder="@utilizador" style="width:100%; padding:10px; margin:10px 0; border-radius:5px; border:none;">
-            <button onclick="login()">ENTRAR</button>
+    <div id="smart-auth">
+        <div class="auth-box">
+            <h1 id="welcome-msg" style="color: var(--gold);">CERVANTES</h1>
+            <p id="sub-msg">Inicia sessão para continuar</p>
+            <div id="auth-fields">
+                <input type="text" id="user-input" placeholder="@usuário">
+                <button onclick="smartLogin()">Entrar</button>
+            </div>
+            <div id="auto-login" style="display:none">
+                <p>A reconhecer dispositivo...</p>
+                <div class="loader"></div>
+            </div>
         </div>
     </div>
 
-    <div id="live-overlay">
-        <video id="live-webcam" autoplay style="width:100%; height:100%; object-fit:cover;"></video>
-        <button onclick="stopLive()" style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%); width:auto; background:red; color:white;">FECHAR LIVE</button>
-    </div>
-
-    <div id="call-ui">
-        <h2 id="call-target">Utilizador</h2>
-        <p>A chamar...</p>
-        <button onclick="document.getElementById('call-ui').style.display='none'" style="background:red; width:80px; height:80px; border-radius:50%; margin-top:50px;">✖</button>
+    <div id="video-engine">
+        <div class="live-label">🔴 AO VIVO</div>
+        <video id="webcam" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+        <button onclick="closeVideo()" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); width:auto; background:red;">Desligar</button>
     </div>
 
     <header>
-        <div class="logo">CERVANTES</div>
-        <div id="lang-indicator">PT</div>
+        <div style="font-weight: bold; color: var(--gold); font-size: 1.4rem;">CERVANTES <span style="font-size:0.7rem; vertical-align:middle; opacity:0.5;">AI</span></div>
+        <div id="user-tag" style="font-size: 0.9rem; opacity: 0.8;"></div>
     </header>
 
     <div class="wrapper">
         <nav>
             <i class="active" onclick="tab('home', this)">🏠</i>
             <i onclick="tab('reels', this)">🎬</i>
-            <i onclick="tab('chats', this)">💬</i>
+            <i onclick="tab('chat', this)">💬</i>
             <i onclick="tab('create', this)">➕</i>
             <i onclick="tab('settings', this)">⚙️</i>
         </nav>
 
-        <main>
+        <main id="app-main">
             <section id="home" class="section active-section">
-                <div class="status-bar">
-                    <div class="status-circle"><img src="https://via.placeholder.com/100"></div>
-                    <div class="status-circle" style="border-color:#888;"><img src="https://via.placeholder.com/100"></div>
-                </div>
-                <div id="feed-items" style="padding:10px;"></div>
+                <h2 id="t-feed">O Teu Feed Inteligente</h2>
+                <div id="feed-render"></div>
             </section>
 
-            <section id="reels" class="section">
-                <div class="reels-container">
-                    <div class="reel-video">
-                        <video loop autoplay muted src="https://www.w3schools.com/html/mov_bbb.mp4" style="width:100%"></video>
-                        <div class="reel-info"><h4>@Cervantes_Oficial</h4><p>O futuro é agora! #reels</p></div>
+            <section id="reels" class="section" style="padding:0;">
+                <div style="height:100%; background:#000; display:flex; align-items:center; justify-content:center; position:relative;">
+                    <video loop autoplay muted src="https://www.w3schools.com/html/mov_bbb.mp4" style="height:100%;"></video>
+                    <div style="position:absolute; bottom:100px; left:20px;">
+                        <strong>@Cervantes_AI</strong>
+                        <p>Bem-vindo ao futuro das Apps.</p>
                     </div>
                 </div>
             </section>
 
-            <section id="chats" class="section">
-                <div class="card" onclick="startCall('Suporte')">
-                    <strong>Suporte Cervantes</strong><br><small>Online - Clique para ligar</small>
+            <section id="chat" class="section">
+                <h2 id="t-chat">Conversas Encriptadas</h2>
+                <div class="card" onclick="startCall()" style="cursor:pointer; display:flex; align-items:center; gap:15px;">
+                    <div style="width:50px; height:50px; background:var(--wa-green); border-radius:50%; display:flex; align-items:center; justify-content:center;">📞</div>
+                    <div><strong>Equipa de Suporte</strong><br><small>Clique para chamada de voz inteligente</small></div>
                 </div>
-                <div style="padding:15px;">
-                    <input type="text" placeholder="Mensagem Privada..." style="width:100%; padding:10px; border-radius:20px; background:#2a3942; border:none; color:white;">
-                </div>
+                <div id="chat-list"></div>
             </section>
 
-            <section id="create" class="section" style="padding:20px;">
-                <button class="btn-live" onclick="startLive()">🔴 INICIAR LIVE NO CANAL</button>
-                <div class="card" style="border: 2px dashed #d4af37; text-align:center; padding:40px;" onclick="document.getElementById('file-in').click()">
-                    <span id="txt-galeria">Escolher da Galeria (Fotos/Vídeos)</span>
-                    <input type="file" id="file-in" hidden onchange="alert('Ficheiro selecionado!')">
+            <section id="create" class="section">
+                <h2 id="t-create">Criar Conteúdo</h2>
+                <button class="card" onclick="startLive()" style="background:#ff000022; border:1px solid red; color:red;">🔴 COMEÇAR LIVE AGORA</button>
+                <div class="card" onclick="document.getElementById('file-upload').click()" style="border: 2px dashed var(--gold); text-align:center; padding:40px;">
+                    <p id="t-upload">Escolher Ficheiro da Galeria</p>
+                    <input type="file" id="file-upload" hidden onchange="processFile(this)">
                 </div>
-                <button onclick="alert('Publicado!')">PUBLICAR AGORA</button>
+                <textarea id="post-text" placeholder="Escreva algo inteligente..." rows="4"></textarea>
+                <button onclick="publish()">Publicar no Canal</button>
             </section>
 
-            <section id="settings" class="section" style="padding:20px;">
+            <section id="settings" class="section">
+                <h2 id="t-settings">Definições</h2>
                 <div class="card">
-                    <h3 id="txt-settings">Definições</h3>
-                    <p id="txt-lang">Idioma / Language</p>
-                    <select id="lang-select" onchange="changeLang()">
+                    <label id="t-lang">Idioma do Sistema</label>
+                    <select id="lang-picker" onchange="applySmartLang()">
                         <option value="pt">Português</option>
                         <option value="en">English</option>
                         <option value="fr">Français</option>
+                        <option value="es">Español</option>
                     </select>
-                    <button style="margin-top:20px;" onclick="document.body.classList.toggle('light-mode')">Mudar Modo (Claro/Escuro)</button>
-                    <button style="background:red; color:white; margin-top:20px;" onclick="location.reload()">Sair</button>
+                    <button onclick="document.body.classList.toggle('light-mode')" style="background:#333; color:#fff; margin-top:20px;">Trocar Modo (Dia/Noite)</button>
+                    <button onclick="logout()" style="background:red; color:#fff; margin-top:20px;">Terminar Sessão</button>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        // Dicionário de Idiomas
-        const translations = {
-            pt: { galeria: "Escolher da Galeria", settings: "Definições", lang: "Idioma", feed: "Página Principal" },
-            en: { galeria: "Choose from Gallery", settings: "Settings", lang: "Language", feed: "Home Page" },
-            fr: { galeria: "Choisir de la Galerie", settings: "Paramètres", lang: "Langue", feed: "Accueil" }
+        // MOTOR DE INTELIGÊNCIA E TRADUÇÃO
+        const langDB = {
+            pt: { feed: "Teu Feed Inteligente", chat: "Conversas", create: "Criar", upload: "Carregar da Galeria", settings: "Definições", lang: "Idioma" },
+            en: { feed: "Smart Feed", chat: "Chats", create: "Create", upload: "Upload from Gallery", settings: "Settings", lang: "Language" },
+            es: { feed: "Feed Inteligente", chat: "Conversas", create: "Crear", upload: "Subir de la Galeria", settings: "Ajustes", lang: "Idioma" }
         };
 
-        function changeLang() {
-            const l = document.getElementById('lang-select').value;
-            document.getElementById('txt-galeria').innerText = translations[l].galeria;
-            document.getElementById('txt-settings').innerText = translations[l].settings;
-            document.getElementById('txt-lang').innerText = translations[l].lang;
-            document.getElementById('lang-indicator').innerText = l.toUpperCase();
+        let user = JSON.parse(localStorage.getItem('cervantes_user'));
+
+        // RECONHECIMENTO AUTOMÁTICO (Login Inteligente)
+        window.onload = () => {
+            if(user) {
+                document.getElementById('auth-fields').style.display = 'none';
+                document.getElementById('auto-login').style.display = 'block';
+                document.getElementById('welcome-msg').innerText = "Olá, " + user.name;
+                setTimeout(() => {
+                    document.getElementById('smart-auth').style.fadeOut(); // Simulado
+                    document.getElementById('smart-auth').style.display = 'none';
+                    document.getElementById('user-tag').innerText = "@" + user.name;
+                }, 1500);
+            }
+            applySmartLang();
+        };
+
+        function smartLogin() {
+            const name = document.getElementById('user-input').value;
+            if(!name) return alert("Insira o seu nome");
+            localStorage.setItem('cervantes_user', JSON.stringify({name: name}));
+            location.reload();
         }
 
-        function login() {
-            const u = document.getElementById('reg-user').value;
-            if(!u) return;
-            document.getElementById('auth-screen').style.display = 'none';
+        function applySmartLang() {
+            const l = document.getElementById('lang-picker').value;
+            const d = langDB[l] || langDB.pt;
+            document.getElementById('t-feed').innerText = d.feed;
+            document.getElementById('t-chat').innerText = d.chat;
+            document.getElementById('t-create').innerText = d.create;
+            document.getElementById('t-upload').innerText = d.upload;
+            document.getElementById('t-settings').innerText = d.settings;
+            document.getElementById('t-lang').innerText = d.lang;
         }
 
         function tab(id, el) {
@@ -159,22 +179,27 @@
             el.classList.add('active');
         }
 
-        /* LIVE REAL */
+        /* LIVE & VÍDEO REAL */
         let stream = null;
         async function startLive() {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            document.getElementById('live-webcam').srcObject = stream;
-            document.getElementById('live-overlay').style.display = 'block';
-        }
-        function stopLive() {
-            stream.getTracks().forEach(t => t.stop());
-            document.getElementById('live-overlay').style.display = 'none';
+            document.getElementById('video-engine').style.display = 'block';
+            stream = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
+            document.getElementById('webcam').srcObject = stream;
         }
 
-        /* CHAMADA */
-        function startCall(name) {
-            document.getElementById('call-target').innerText = name;
-            document.getElementById('call-ui').style.display = 'flex';
+        function closeVideo() {
+            if(stream) stream.getTracks().forEach(t => t.stop());
+            document.getElementById('video-engine').style.display = 'none';
+        }
+
+        function startCall() {
+            alert("A iniciar chamada encriptada...");
+            startLive();
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload();
         }
     </script>
 </body>
