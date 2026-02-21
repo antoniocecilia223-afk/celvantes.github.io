@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cervantes | Super App</title>
     <style>
-        :root { --gold: #d4af37; --bg: #0b141a; --card: #111b21; --text: #e9edef; --wa-green: #00a884; --wa-msg-me: #005c4b; --wa-msg-them: #202c33; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        :root { --gold: #d4af37; --bg: #0b141a; --card: #111b21; --text: #e9edef; --wa-green: #00a884; }
+        .light-mode { --bg: #f0f2f5; --card: #ffffff; --text: #111b21; }
+        
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; transition: 0.3s; }
 
         /* HEADER & NAV */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card); border-bottom: 1px solid #222; color: var(--gold); font-weight: bold; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--card); border-bottom: 1px solid #222; }
+        .logo { color: var(--gold); font-weight: bold; font-size: 1.3rem; }
+        
         .wrapper { display: flex; flex: 1; overflow: hidden; }
-        nav { width: 70px; background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 30px; border-right: 1px solid #222; }
+        nav { width: 70px; background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 25px; border-right: 1px solid #222; }
         nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; color: #8696a0; }
         nav i.active { color: var(--gold); }
 
@@ -19,131 +23,133 @@
         .section { display: none; height: 100%; flex-direction: column; }
         .active-section { display: flex; }
 
-        /* SISTEMA DE CHAT & CHAMADA */
-        #wa-chat-window { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0b141a; display: none; flex-direction: column; z-index: 500; }
-        .wa-header { padding: 10px 15px; background: var(--card); display: flex; align-items: center; gap: 12px; }
-        .call-icons { margin-left: auto; display: flex; gap: 20px; color: var(--gold); font-size: 1.2rem; cursor: pointer; }
-        
-        /* TELA DE CHAMADA */
-        #call-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #075e54; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: space-around; padding: 50px 0; }
-        .call-avatar { width: 150px; height: 150px; border-radius: 50%; border: 3px solid white; overflow: hidden; }
-        .call-btns { display: flex; gap: 50px; }
-        .btn-call { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; color: white; border: none; }
+        /* REELS (SCROLL VERTICAL) */
+        .reels-container { height: 100%; overflow-y: scroll; snap-type: y mandatory; }
+        .reel-video { height: 100%; width: 100%; snap-align: start; background: #000; position: relative; display: flex; align-items: center; justify-content: center; }
+        .reel-info { position: absolute; bottom: 80px; left: 20px; text-shadow: 1px 1px 5px #000; }
 
-        /* LIVE REAL */
-        #live-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 1500; display: none; }
-        video#live-video { width: 100%; height: 100%; object-fit: cover; }
-        .live-overlay { position: absolute; top: 20px; left: 20px; display: flex; gap: 10px; }
-        .live-badge { background: red; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; }
+        /* CHATS & STATUS (WHATSAPP STYLE) */
+        .status-bar { display: flex; gap: 15px; padding: 15px; overflow-x: auto; background: var(--card); border-bottom: 1px solid #222; }
+        .status-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--wa-green); padding: 2px; }
+        .status-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        /* REGISTO */
-        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 3000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; border: 1px solid var(--gold); width: 85%; max-width: 350px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #2a3942; border: none; border-radius: 8px; color: white; }
-        button { background: var(--gold); border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        /* LIVE & CHAMADAS */
+        #live-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; }
+        #call-ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #075e54; z-index: 2100; display: none; flex-direction: column; align-items: center; justify-content: center; }
 
-        .msg-box { flex: 1; padding: 20px; overflow-y: auto; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
-        .bubble { padding: 10px; margin: 5px 0; border-radius: 10px; max-width: 80%; }
-        .me { background: var(--wa-msg-me); align-self: flex-end; }
-        .them { background: var(--wa-msg-them); align-self: flex-start; }
+        /* INTERFACE GERAL */
+        .card { background: var(--card); border-radius: 12px; padding: 15px; margin: 15px; border: 1px solid #333; }
+        button { background: var(--gold); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; color: #000; margin-top: 10px; }
+        .btn-live { background: #ff0000; color: #fff; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div class="auth-card">
-            <h2 style="color:var(--gold)">CERVANTES</h2>
-            <input type="text" id="reg-user" placeholder="@nome_utilizador">
-            <button onclick="iniciarApp()">ENTRAR AGORA</button>
+    <div id="auth-screen" style="position:fixed; inset:0; background:var(--bg); z-index:3000; display:flex; align-items:center; justify-content:center;">
+        <div class="card" style="width:300px; text-align:center;">
+            <h1 style="color:var(--gold)">CERVANTES</h1>
+            <input type="text" id="reg-user" placeholder="@utilizador" style="width:100%; padding:10px; margin:10px 0; border-radius:5px; border:none;">
+            <button onclick="login()">ENTRAR</button>
         </div>
     </div>
 
-    <div id="live-view">
-        <div class="live-overlay">
-            <div class="live-badge">AO VIVO</div>
-            <div id="live-timer" style="background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 5px;">00:00</div>
-        </div>
-        <video id="live-video" autoplay playsinline></video>
-        <button onclick="stopLive()" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); width:auto; background:red;">ENCERRAR LIVE</button>
+    <div id="live-overlay">
+        <video id="live-webcam" autoplay style="width:100%; height:100%; object-fit:cover;"></video>
+        <button onclick="stopLive()" style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%); width:auto; background:red; color:white;">FECHAR LIVE</button>
     </div>
 
-    <div id="call-screen">
-        <div style="text-align: center;">
-            <div class="call-avatar"><img src="https://via.placeholder.com/150" style="width:100%"></div>
-            <h2 id="call-name" style="margin-top:20px;">Utilizador</h2>
-            <p>A chamar...</p>
-        </div>
-        <div class="call-btns">
-            <button class="btn-call" style="background:#ff4444;" onclick="endCall()">✖</button>
-            <button class="btn-call" style="background:var(--wa-green);" onclick="alert('Chamada Atendida!')">✔</button>
-        </div>
+    <div id="call-ui">
+        <h2 id="call-target">Utilizador</h2>
+        <p>A chamar...</p>
+        <button onclick="document.getElementById('call-ui').style.display='none'" style="background:red; width:80px; height:80px; border-radius:50%; margin-top:50px;">✖</button>
     </div>
 
     <header>
-        <div>CERVANTES</div>
-        <div id="status-user"></div>
+        <div class="logo">CERVANTES</div>
+        <div id="lang-indicator">PT</div>
     </header>
 
     <div class="wrapper">
         <nav>
             <i class="active" onclick="tab('home', this)">🏠</i>
+            <i onclick="tab('reels', this)">🎬</i>
             <i onclick="tab('chats', this)">💬</i>
             <i onclick="tab('create', this)">➕</i>
-            <i onclick="tab('channel', this)">📺</i>
+            <i onclick="tab('settings', this)">⚙️</i>
         </nav>
 
         <main>
-            <section id="home" class="section active-section" style="padding:20px;">
-                <h3>Novidades</h3>
-                <div id="feed-content"></div>
+            <section id="home" class="section active-section">
+                <div class="status-bar">
+                    <div class="status-circle"><img src="https://via.placeholder.com/100"></div>
+                    <div class="status-circle" style="border-color:#888;"><img src="https://via.placeholder.com/100"></div>
+                </div>
+                <div id="feed-items" style="padding:10px;"></div>
+            </section>
+
+            <section id="reels" class="section">
+                <div class="reels-container">
+                    <div class="reel-video">
+                        <video loop autoplay muted src="https://www.w3schools.com/html/mov_bbb.mp4" style="width:100%"></video>
+                        <div class="reel-info"><h4>@Cervantes_Oficial</h4><p>O futuro é agora! #reels</p></div>
+                    </div>
+                </div>
             </section>
 
             <section id="chats" class="section">
-                <div style="padding:15px; background:var(--card);">
-                    <input type="text" id="search-user" placeholder="Pesquisar @utilizador para DM..." style="margin:0">
+                <div class="card" onclick="startCall('Suporte')">
+                    <strong>Suporte Cervantes</strong><br><small>Online - Clique para ligar</small>
                 </div>
-                <div id="wa-list" style="flex:1">
-                    <div class="chat-item" style="padding:15px; display:flex; gap:10px; cursor:pointer;" onclick="abrirChat('Suporte Cervantes')">
-                        <div style="width:50px; height:50px; background:#444; border-radius:50%"></div>
-                        <div><strong>Suporte Cervantes</strong><br><small>Olá! Como posso ajudar?</small></div>
-                    </div>
-                </div>
-
-                <div id="wa-chat-window">
-                    <div class="wa-header">
-                        <span onclick="fecharChat()" style="cursor:pointer">←</span>
-                        <strong id="chat-title">Nome</strong>
-                        <div class="call-icons">
-                            <span onclick="startCall('Voz')">📞</span>
-                            <span onclick="startCall('Vídeo')">📹</span>
-                        </div>
-                    </div>
-                    <div class="msg-box" id="msg-box" style="display:flex; flex-direction:column;"></div>
-                    <div style="padding:10px; background:var(--card); display:flex; gap:10px;">
-                        <input type="text" id="chat-in" placeholder="Mensagem" style="margin:0">
-                        <button onclick="enviarDM()" style="width:auto; margin:0">➤</button>
-                    </div>
+                <div style="padding:15px;">
+                    <input type="text" placeholder="Mensagem Privada..." style="width:100%; padding:10px; border-radius:20px; background:#2a3942; border:none; color:white;">
                 </div>
             </section>
 
             <section id="create" class="section" style="padding:20px;">
-                <button onclick="startLive()" style="background:red; padding:20px; font-weight:bold; border-radius:12px; color:white; border:none; cursor:pointer;">🔴 INICIAR TRANSMISSÃO AO VIVO</button>
-                <div style="margin-top:20px; border: 2px dashed #444; padding:30px; text-align:center; border-radius:15px;" onclick="alert('Galeria Aberta')">
-                    📸 Carregar da Galeria (Fotos/Vídeos)
+                <button class="btn-live" onclick="startLive()">🔴 INICIAR LIVE NO CANAL</button>
+                <div class="card" style="border: 2px dashed #d4af37; text-align:center; padding:40px;" onclick="document.getElementById('file-in').click()">
+                    <span id="txt-galeria">Escolher da Galeria (Fotos/Vídeos)</span>
+                    <input type="file" id="file-in" hidden onchange="alert('Ficheiro selecionado!')">
+                </div>
+                <button onclick="alert('Publicado!')">PUBLICAR AGORA</button>
+            </section>
+
+            <section id="settings" class="section" style="padding:20px;">
+                <div class="card">
+                    <h3 id="txt-settings">Definições</h3>
+                    <p id="txt-lang">Idioma / Language</p>
+                    <select id="lang-select" onchange="changeLang()">
+                        <option value="pt">Português</option>
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                    </select>
+                    <button style="margin-top:20px;" onclick="document.body.classList.toggle('light-mode')">Mudar Modo (Claro/Escuro)</button>
+                    <button style="background:red; color:white; margin-top:20px;" onclick="location.reload()">Sair</button>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        let me = "";
-        let stream = null;
+        // Dicionário de Idiomas
+        const translations = {
+            pt: { galeria: "Escolher da Galeria", settings: "Definições", lang: "Idioma", feed: "Página Principal" },
+            en: { galeria: "Choose from Gallery", settings: "Settings", lang: "Language", feed: "Home Page" },
+            fr: { galeria: "Choisir de la Galerie", settings: "Paramètres", lang: "Langue", feed: "Accueil" }
+        };
 
-        function iniciarApp() {
-            me = document.getElementById('reg-user').value;
-            if(!me) return alert("Insere o teu @");
+        function changeLang() {
+            const l = document.getElementById('lang-select').value;
+            document.getElementById('txt-galeria').innerText = translations[l].galeria;
+            document.getElementById('txt-settings').innerText = translations[l].settings;
+            document.getElementById('txt-lang').innerText = translations[l].lang;
+            document.getElementById('lang-indicator').innerText = l.toUpperCase();
+        }
+
+        function login() {
+            const u = document.getElementById('reg-user').value;
+            if(!u) return;
             document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('status-user').innerText = me;
         }
 
         function tab(id, el) {
@@ -153,54 +159,22 @@
             el.classList.add('active');
         }
 
-        /* LÓGICA LIVE */
+        /* LIVE REAL */
+        let stream = null;
         async function startLive() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                document.getElementById('live-video').srcObject = stream;
-                document.getElementById('live-view').style.display = 'block';
-                // Iniciar cronómetro
-                let sec = 0;
-                setInterval(() => {
-                    sec++;
-                    let m = Math.floor(sec/60);
-                    let s = sec%60;
-                    document.getElementById('live-timer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                }, 1000);
-            } catch (err) {
-                alert("Erro ao abrir a câmara: " + err);
-            }
+            stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('live-webcam').srcObject = stream;
+            document.getElementById('live-overlay').style.display = 'block';
         }
-
         function stopLive() {
-            if(stream) stream.getTracks().forEach(track => track.stop());
-            document.getElementById('live-view').style.display = 'none';
+            stream.getTracks().forEach(t => t.stop());
+            document.getElementById('live-overlay').style.display = 'none';
         }
 
-        /* LÓGICA CHAT & CHAMADA */
-        function abrirChat(nome) {
-            document.getElementById('wa-chat-window').style.display = 'flex';
-            document.getElementById('chat-title').innerText = nome;
-        }
-
-        function fecharChat() { document.getElementById('wa-chat-window').style.display = 'none'; }
-
-        function startCall(tipo) {
-            document.getElementById('call-name').innerText = document.getElementById('chat-title').innerText;
-            document.getElementById('call-screen').style.display = 'flex';
-            // Som de chamada simulado
-            console.log("A tocar chamada de " + tipo);
-        }
-
-        function endCall() { document.getElementById('call-screen').style.display = 'none'; }
-
-        function enviarDM() {
-            const val = document.getElementById('chat-in').value;
-            const box = document.getElementById('msg-box');
-            if(!val) return;
-            box.innerHTML += `<div class="bubble me">${val}</div>`;
-            document.getElementById('chat-in').value = "";
-            box.scrollTop = box.scrollHeight;
+        /* CHAMADA */
+        function startCall(name) {
+            document.getElementById('call-target').innerText = name;
+            document.getElementById('call-ui').style.display = 'flex';
         }
     </script>
 </body>
