@@ -3,174 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes AI | Super App</title>
+    <title>Cervantes | From_celta.5 Edition</title>
     <style>
-        :root { --gold: #d4af37; --bg: #050505; --card: #121212; --text: #ffffff; --wa-green: #00a884; }
-        .light-mode { --bg: #ffffff; --card: #f0f2f5; --text: #1c1e21; }
-        
-        body { font-family: 'Segoe UI', system-ui; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; transition: 0.5s; }
+        :root { --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; --wa-green: #00a884; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; }
 
-        /* LOGIN INTELIGENTE */
-        #smart-auth { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .auth-box { background: var(--card); padding: 40px; border-radius: 25px; border: 1px solid var(--gold); text-align: center; width: 320px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
-        
-        /* INTERFACE */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: rgba(0,0,0,0.8); border-bottom: 1px solid #222; sticky: top; }
-        .wrapper { display: flex; flex: 1; height: calc(100vh - 65px); }
-        nav { width: 75px; background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 35px; }
-        nav i { font-style: normal; font-size: 1.8rem; cursor: pointer; opacity: 0.5; transition: 0.3s; }
-        nav i.active { opacity: 1; color: var(--gold); transform: scale(1.2); }
+        /* BARRA ADMIN */
+        #admin-bar { background: var(--gold); color: #000; padding: 5px 15px; font-size: 0.8rem; font-weight: bold; display: none; justify-content: space-between; }
 
-        main { flex: 1; overflow-y: auto; padding-bottom: 50px; scroll-behavior: smooth; }
-        .section { display: none; padding: 20px; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* HEADER & LAYOUT */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #222; background: var(--bg); }
+        .wrapper { display: flex; height: calc(100vh - 90px); }
+        nav { width: 70px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 25px; }
+        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; opacity: 0.4; transition: 0.3s; }
+        nav i.active { opacity: 1; color: var(--gold); }
+
+        main { flex: 1; overflow-y: auto; background: var(--bg); }
+        .section { display: none; padding: 15px; }
         .active-section { display: block; }
 
-        /* SMART CARDS */
-        .card { background: var(--card); border-radius: 18px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
-        .card:hover { border-color: var(--gold); }
+        /* FEED DINÂMICO (ESTILOS) */
+        .feed-grid-yt { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .feed-insta { max-width: 500px; margin: 0 auto; }
         
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #333; background: #000; color: #fff; outline: none; }
-        button { background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.2s; }
-        button:active { transform: scale(0.95); }
+        .post-card { background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+        .yt-thumb { width: 100%; aspect-ratio: 16/9; background: #333; object-fit: cover; }
+        .insta-img { width: 100%; aspect-ratio: 1/1; background: #333; object-fit: cover; }
 
-        /* LIVE & CALLS */
-        #video-engine { position: fixed; inset: 0; background: #000; z-index: 4000; display: none; }
-        .live-label { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 15px; border-radius: 5px; font-weight: bold; }
+        /* CHAT WHATSAPP (FUNDO CÉU) */
+        #chat-window { position: absolute; inset: 0; background: #0b141a; display: none; flex-direction: column; z-index: 1000; }
+        .chat-header { padding: 10px 15px; background: #202c33; display: flex; align-items: center; gap: 10px; }
+        .chat-body { 
+            flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
+            background: url('https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?auto=format&fit=crop&w=1000&q=80'); /* FUNDO CÉU */
+            background-size: cover; background-attachment: fixed;
+        }
+        .bubble { padding: 8px 12px; border-radius: 8px; max-width: 75%; font-size: 0.9rem; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .me { background: #005c4b; color: #fff; align-self: flex-end; border-top-right-radius: 0; }
+        .them { background: #202c33; color: #fff; align-self: flex-start; border-top-left-radius: 0; }
+
+        /* LOGIN */
+        #login-gate { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: #121212; padding: 40px; border: 1px solid #333; width: 320px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; box-sizing: border-box; }
+        button { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 5px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
-    <div id="smart-auth">
-        <div class="auth-box">
-            <h1 id="welcome-msg" style="color: var(--gold);">CERVANTES</h1>
-            <p id="sub-msg">Inicia sessão para continuar</p>
-            <div id="auth-fields">
-                <input type="text" id="user-input" placeholder="@usuário">
-                <button onclick="smartLogin()">Entrar</button>
-            </div>
-            <div id="auto-login" style="display:none">
-                <p>A reconhecer dispositivo...</p>
-                <div class="loader"></div>
-            </div>
+    <div id="admin-bar">
+        <span>👑 ADMIN: From_celta.5</span>
+        <span id="user-count">Utilizadores: 1</span>
+    </div>
+
+    <div id="login-gate">
+        <div class="login-box">
+            <h1 style="color:var(--gold)">Cervantes</h1>
+            <input type="text" id="user-in" placeholder="Nome de utilizador (@)">
+            <button onclick="fazerLogin()">Entrar</button>
+            <p id="error-msg" style="color:red; font-size: 0.8rem;"></p>
         </div>
     </div>
 
-    <div id="video-engine">
-        <div class="live-label">🔴 AO VIVO</div>
-        <video id="webcam" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
-        <button onclick="closeVideo()" style="position:absolute; bottom:40px; left:50%; transform:translateX(-50%); width:auto; background:red;">Desligar</button>
-    </div>
-
     <header>
-        <div style="font-weight: bold; color: var(--gold); font-size: 1.4rem;">CERVANTES <span style="font-size:0.7rem; vertical-align:middle; opacity:0.5;">AI</span></div>
-        <div id="user-tag" style="font-size: 0.9rem; opacity: 0.8;"></div>
+        <div style="font-weight:bold; color:var(--gold)">CERVANTES</div>
+        <div id="current-user" style="font-size: 0.8rem;"></div>
     </header>
 
     <div class="wrapper">
         <nav>
-            <i class="active" onclick="tab('home', this)">🏠</i>
-            <i onclick="tab('reels', this)">🎬</i>
-            <i onclick="tab('chat', this)">💬</i>
-            <i onclick="tab('create', this)">➕</i>
+            <i class="active" onclick="tab('feed', this)">🏠</i>
+            <i onclick="tab('messages', this)">💬</i>
             <i onclick="tab('settings', this)">⚙️</i>
         </nav>
 
-        <main id="app-main">
-            <section id="home" class="section active-section">
-                <h2 id="t-feed">O Teu Feed Inteligente</h2>
-                <div id="feed-render"></div>
+        <main>
+            <section id="feed" class="section active-section">
+                <div id="feed-container" class="feed-insta"></div>
             </section>
 
-            <section id="reels" class="section" style="padding:0;">
-                <div style="height:100%; background:#000; display:flex; align-items:center; justify-content:center; position:relative;">
-                    <video loop autoplay muted src="https://www.w3schools.com/html/mov_bbb.mp4" style="height:100%;"></video>
-                    <div style="position:absolute; bottom:100px; left:20px;">
-                        <strong>@Cervantes_AI</strong>
-                        <p>Bem-vindo ao futuro das Apps.</p>
+            <section id="messages" class="section">
+                <div style="padding:15px; background: #121212; border-radius:10px; cursor:pointer;" onclick="abrirChat('Suporte Cervantes')">
+                    <strong>Suporte Cervantes</strong><br><small>Mensagem de sistema</small>
+                </div>
+
+                <div id="chat-window">
+                    <div class="chat-header">
+                        <span onclick="fecharChat()">←</span>
+                        <strong id="target-name">Nome</strong>
+                    </div>
+                    <div class="chat-body" id="chat-body">
+                        <div class="bubble them">Bem-vindo ao chat privado do Cervantes.</div>
+                    </div>
+                    <div style="padding:10px; background:#202c33; display:flex; gap:10px;">
+                        <input type="text" id="msg-input" placeholder="Mensagem" style="margin:0">
+                        <button onclick="enviarMensagem()" style="width:auto;">➤</button>
                     </div>
                 </div>
             </section>
 
-            <section id="chat" class="section">
-                <h2 id="t-chat">Conversas Encriptadas</h2>
-                <div class="card" onclick="startCall()" style="cursor:pointer; display:flex; align-items:center; gap:15px;">
-                    <div style="width:50px; height:50px; background:var(--wa-green); border-radius:50%; display:flex; align-items:center; justify-content:center;">📞</div>
-                    <div><strong>Equipa de Suporte</strong><br><small>Clique para chamada de voz inteligente</small></div>
-                </div>
-                <div id="chat-list"></div>
-            </section>
-
-            <section id="create" class="section">
-                <h2 id="t-create">Criar Conteúdo</h2>
-                <button class="card" onclick="startLive()" style="background:#ff000022; border:1px solid red; color:red;">🔴 COMEÇAR LIVE AGORA</button>
-                <div class="card" onclick="document.getElementById('file-upload').click()" style="border: 2px dashed var(--gold); text-align:center; padding:40px;">
-                    <p id="t-upload">Escolher Ficheiro da Galeria</p>
-                    <input type="file" id="file-upload" hidden onchange="processFile(this)">
-                </div>
-                <textarea id="post-text" placeholder="Escreva algo inteligente..." rows="4"></textarea>
-                <button onclick="publish()">Publicar no Canal</button>
-            </section>
-
             <section id="settings" class="section">
-                <h2 id="t-settings">Definições</h2>
-                <div class="card">
-                    <label id="t-lang">Idioma do Sistema</label>
-                    <select id="lang-picker" onchange="applySmartLang()">
-                        <option value="pt">Português</option>
-                        <option value="en">English</option>
-                        <option value="fr">Français</option>
-                        <option value="es">Español</option>
+                <div style="background:#121212; padding:20px; border-radius:15px;">
+                    <h3>Personalizar Feed</h3>
+                    <select id="feed-style" onchange="mudarEstiloFeed()">
+                        <option value="insta">Estilo Instagram (Vertical)</option>
+                        <option value="yt">Estilo YouTube (Grelha)</option>
                     </select>
-                    <button onclick="document.body.classList.toggle('light-mode')" style="background:#333; color:#fff; margin-top:20px;">Trocar Modo (Dia/Noite)</button>
-                    <button onclick="logout()" style="background:red; color:#fff; margin-top:20px;">Terminar Sessão</button>
+                    <button onclick="logout()" style="background:red; color:white; margin-top:30px;">Terminar Sessão</button>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        // MOTOR DE INTELIGÊNCIA E TRADUÇÃO
-        const langDB = {
-            pt: { feed: "Teu Feed Inteligente", chat: "Conversas", create: "Criar", upload: "Carregar da Galeria", settings: "Definições", lang: "Idioma" },
-            en: { feed: "Smart Feed", chat: "Chats", create: "Create", upload: "Upload from Gallery", settings: "Settings", lang: "Language" },
-            es: { feed: "Feed Inteligente", chat: "Conversas", create: "Crear", upload: "Subir de la Galeria", settings: "Ajustes", lang: "Idioma" }
-        };
+        let db_users = JSON.parse(localStorage.getItem('c_users') || '["From_celta.5"]');
+        let currentUser = localStorage.getItem('c_session');
+        let posts = [
+            { id: 1, user: 'Cervantes', text: 'Bem-vindo ao futuro!', img: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=500' },
+            { id: 2, user: 'NASA', text: 'Espaço profundo.', img: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500' }
+        ];
 
-        let user = JSON.parse(localStorage.getItem('cervantes_user'));
-
-        // RECONHECIMENTO AUTOMÁTICO (Login Inteligente)
         window.onload = () => {
-            if(user) {
-                document.getElementById('auth-fields').style.display = 'none';
-                document.getElementById('auto-login').style.display = 'block';
-                document.getElementById('welcome-msg').innerText = "Olá, " + user.name;
-                setTimeout(() => {
-                    document.getElementById('smart-auth').style.fadeOut(); // Simulado
-                    document.getElementById('smart-auth').style.display = 'none';
-                    document.getElementById('user-tag').innerText = "@" + user.name;
-                }, 1500);
+            if(currentUser) {
+                document.getElementById('login-gate').style.display = 'none';
+                document.getElementById('current-user').innerText = "@" + currentUser;
+                if(currentUser === "From_celta.5") {
+                    document.getElementById('admin-bar').style.display = 'flex';
+                    document.getElementById('user-count').innerText = "Utilizadores: " + db_users.length;
+                }
+                renderFeed();
             }
-            applySmartLang();
-        };
-
-        function smartLogin() {
-            const name = document.getElementById('user-input').value;
-            if(!name) return alert("Insira o seu nome");
-            localStorage.setItem('cervantes_user', JSON.stringify({name: name}));
-            location.reload();
         }
 
-        function applySmartLang() {
-            const l = document.getElementById('lang-picker').value;
-            const d = langDB[l] || langDB.pt;
-            document.getElementById('t-feed').innerText = d.feed;
-            document.getElementById('t-chat').innerText = d.chat;
-            document.getElementById('t-create').innerText = d.create;
-            document.getElementById('t-upload').innerText = d.upload;
-            document.getElementById('t-settings').innerText = d.settings;
-            document.getElementById('t-lang').innerText = d.lang;
+        function fazerLogin() {
+            const user = document.getElementById('user-in').value.trim();
+            if(!user) return;
+
+            if(user === "From_celta.5") { entrar(user); return; }
+
+            if(db_users.includes(user)) {
+                document.getElementById('error-msg').innerText = "Este nome de utilizador já existe!";
+            } else {
+                db_users.push(user);
+                localStorage.setItem('c_users', JSON.stringify(db_users));
+                entrar(user);
+            }
         }
+
+        function entrar(u) { localStorage.setItem('c_session', u); location.reload(); }
 
         function tab(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
@@ -179,28 +159,43 @@
             el.classList.add('active');
         }
 
-        /* LIVE & VÍDEO REAL */
-        let stream = null;
-        async function startLive() {
-            document.getElementById('video-engine').style.display = 'block';
-            stream = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
-            document.getElementById('webcam').srcObject = stream;
+        /* FEED INTELIGENTE */
+        function mudarEstiloFeed() { renderFeed(); }
+
+        function renderFeed() {
+            const style = document.getElementById('feed-style').value;
+            const container = document.getElementById('feed-container');
+            container.className = (style === 'yt') ? 'feed-grid-yt' : 'feed-insta';
+            
+            container.innerHTML = "";
+            posts.forEach(p => {
+                container.innerHTML += `
+                    <div class="post-card">
+                        <img src="${p.img}" class="${style === 'yt' ? 'yt-thumb' : 'insta-img'}">
+                        <div style="padding:12px;">
+                            <strong>@${p.user}</strong>
+                            <p style="font-size:0.9rem; opacity:0.8;">${p.text}</p>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        function closeVideo() {
-            if(stream) stream.getTracks().forEach(t => t.stop());
-            document.getElementById('video-engine').style.display = 'none';
+        /* CHAT WHATSAPP */
+        function abrirChat(nome) {
+            document.getElementById('chat-window').style.display = 'flex';
+            document.getElementById('target-name').innerText = nome;
+        }
+        function fecharChat() { document.getElementById('chat-window').style.display = 'none'; }
+        
+        function enviarMensagem() {
+            const val = document.getElementById('msg-input').value;
+            if(!val) return;
+            document.getElementById('chat-body').innerHTML += `<div class="bubble me">${val}</div>`;
+            document.getElementById('msg-input').value = "";
         }
 
-        function startCall() {
-            alert("A iniciar chamada encriptada...");
-            startLive();
-        }
-
-        function logout() {
-            localStorage.clear();
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('c_session'); location.reload(); }
     </script>
 </body>
 </html>
