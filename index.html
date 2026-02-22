@@ -3,50 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | From_celta.5 Edition</title>
+    <title>Cervantes | From_celta.5 Super App</title>
     <style>
-        :root { --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; --wa-green: #00a884; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; }
+        :root { --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; --wa-bg: #0b141a; }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow: hidden; height: 100vh; }
 
-        /* BARRA ADMIN */
-        #admin-bar { background: var(--gold); color: #000; padding: 5px 15px; font-size: 0.8rem; font-weight: bold; display: none; justify-content: space-between; }
+        /* ADMIN BAR */
+        #admin-bar { background: var(--gold); color: #000; padding: 6px 15px; font-size: 0.8rem; font-weight: bold; display: none; justify-content: space-between; z-index: 6000; }
 
-        /* HEADER & LAYOUT */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #222; background: var(--bg); }
-        .wrapper { display: flex; height: calc(100vh - 90px); }
-        nav { width: 70px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 25px; }
-        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; opacity: 0.4; transition: 0.3s; }
+        /* LAYOUT */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #222; }
+        .wrapper { display: flex; height: calc(100vh - 65px); }
+        nav { width: 72px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 30px; }
+        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; opacity: 0.4; }
         nav i.active { opacity: 1; color: var(--gold); }
 
-        main { flex: 1; overflow-y: auto; background: var(--bg); }
+        main { flex: 1; overflow-y: auto; scroll-behavior: smooth; }
         .section { display: none; padding: 15px; }
         .active-section { display: block; }
 
-        /* FEED DINÂMICO (ESTILOS) */
-        .feed-grid-yt { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .feed-insta { max-width: 500px; margin: 0 auto; }
+        /* FEED YOUTUBE (SMART AUTO-PLAY) */
+        .feed-grid-yt { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
+        .yt-card { cursor: pointer; transition: 0.3s; }
+        .yt-video-container { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; border-radius: 12px; overflow: hidden; }
+        .yt-video-container video { width: 100%; height: 100%; object-fit: cover; }
         
-        .post-card { background: var(--card); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
-        .yt-thumb { width: 100%; aspect-ratio: 16/9; background: #333; object-fit: cover; }
-        .insta-img { width: 100%; aspect-ratio: 1/1; background: #333; object-fit: cover; }
+        /* FEED INSTAGRAM */
+        .feed-insta { max-width: 480px; margin: 0 auto; }
+        .insta-card { background: var(--card); border-radius: 0px; margin-bottom: 25px; border-bottom: 1px solid #222; }
+        .insta-media { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
 
-        /* CHAT WHATSAPP (FUNDO CÉU) */
-        #chat-window { position: absolute; inset: 0; background: #0b141a; display: none; flex-direction: column; z-index: 1000; }
-        .chat-header { padding: 10px 15px; background: #202c33; display: flex; align-items: center; gap: 10px; }
-        .chat-body { 
-            flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
-            background: url('https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?auto=format&fit=crop&w=1000&q=80'); /* FUNDO CÉU */
+        /* WHATSAPP CLONE (FUNDO CÉU) */
+        #chat-view { position: fixed; inset: 0; background: var(--wa-bg); z-index: 5000; display: none; flex-direction: column; }
+        .chat-header { background: #202c33; padding: 10px 16px; display: flex; align-items: center; gap: 15px; }
+        .chat-content { 
+            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px;
+            background: url('https://i.pinimg.com/originals/f5/05/24/f50524ee5f161f371581a5909dd7739e.jpg'); /* FUNDO CÉU LIMPO */
             background-size: cover; background-attachment: fixed;
         }
-        .bubble { padding: 8px 12px; border-radius: 8px; max-width: 75%; font-size: 0.9rem; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-        .me { background: #005c4b; color: #fff; align-self: flex-end; border-top-right-radius: 0; }
-        .them { background: #202c33; color: #fff; align-self: flex-start; border-top-left-radius: 0; }
+        .bubble { padding: 8px 12px; border-radius: 8px; max-width: 80%; font-size: 0.9rem; box-shadow: 0 1px 1px #000; }
+        .me { background: #005c4b; align-self: flex-end; border-top-right-radius: 0; }
+        .them { background: #202c33; align-self: flex-start; border-top-left-radius: 0; }
 
         /* LOGIN */
-        #login-gate { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: #121212; padding: 40px; border: 1px solid #333; width: 320px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; box-sizing: border-box; }
-        button { background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 5px; width: 100%; font-weight: bold; cursor: pointer; }
+        #login-gate { position: fixed; inset: 0; background: #000; z-index: 9000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: #000; border: 1px solid #333; padding: 40px; width: 300px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #121212; border: 1px solid #333; color: #fff; box-sizing: border-box; }
+        button { background: var(--gold); border: none; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -58,16 +61,16 @@
 
     <div id="login-gate">
         <div class="login-box">
-            <h1 style="color:var(--gold)">Cervantes</h1>
-            <input type="text" id="user-in" placeholder="Nome de utilizador (@)">
-            <button onclick="fazerLogin()">Entrar</button>
-            <p id="error-msg" style="color:red; font-size: 0.8rem;"></p>
+            <h1 style="color:var(--gold); font-size: 2.5rem;">Cervantes</h1>
+            <input type="text" id="user-in" placeholder="Nome de utilizador">
+            <button onclick="validarLogin()">Entrar</button>
+            <p id="error-txt" style="color:#ed4956; font-size: 0.8rem;"></p>
         </div>
     </div>
 
     <header>
-        <div style="font-weight:bold; color:var(--gold)">CERVANTES</div>
-        <div id="current-user" style="font-size: 0.8rem;"></div>
+        <div style="font-weight:bold; color:var(--gold); font-size: 1.2rem;">CERVANTES</div>
+        <div id="user-display" style="opacity:0.6; font-size: 0.8rem;"></div>
     </header>
 
     <div class="wrapper">
@@ -79,78 +82,78 @@
 
         <main>
             <section id="feed" class="section active-section">
-                <div id="feed-container" class="feed-insta"></div>
+                <div id="feed-render" class="feed-insta"></div>
             </section>
 
             <section id="messages" class="section">
-                <div style="padding:15px; background: #121212; border-radius:10px; cursor:pointer;" onclick="abrirChat('Suporte Cervantes')">
-                    <strong>Suporte Cervantes</strong><br><small>Mensagem de sistema</small>
+                <div style="background:var(--card); padding:15px; border-radius:10px; cursor:pointer;" onclick="openChat('Suporte Cervantes')">
+                    <strong>Suporte Cervantes</strong><br><small>Mensagem de segurança</small>
                 </div>
 
-                <div id="chat-window">
+                <div id="chat-view">
                     <div class="chat-header">
-                        <span onclick="fecharChat()">←</span>
-                        <strong id="target-name">Nome</strong>
+                        <span onclick="closeChat()" style="cursor:pointer">←</span>
+                        <div style="width:35px; height:35px; border-radius:50%; background:#444;"></div>
+                        <strong id="chat-name">Nome</strong>
                     </div>
-                    <div class="chat-body" id="chat-body">
-                        <div class="bubble them">Bem-vindo ao chat privado do Cervantes.</div>
+                    <div class="chat-content" id="chat-msgs">
+                        <div class="bubble them">Olá! Esta é a tua área privada segura.</div>
                     </div>
                     <div style="padding:10px; background:#202c33; display:flex; gap:10px;">
-                        <input type="text" id="msg-input" placeholder="Mensagem" style="margin:0">
-                        <button onclick="enviarMensagem()" style="width:auto;">➤</button>
+                        <input type="text" id="wa-input" placeholder="Mensagem" style="margin:0">
+                        <button onclick="sendWA()" style="width:auto; padding:0 20px;">➤</button>
                     </div>
                 </div>
             </section>
 
             <section id="settings" class="section">
-                <div style="background:#121212; padding:20px; border-radius:15px;">
-                    <h3>Personalizar Feed</h3>
-                    <select id="feed-style" onchange="mudarEstiloFeed()">
-                        <option value="insta">Estilo Instagram (Vertical)</option>
-                        <option value="yt">Estilo YouTube (Grelha)</option>
+                <div style="background:var(--card); padding:20px; border-radius:12px;">
+                    <h3>Personalização do Feed</h3>
+                    <select id="feed-choice" onchange="renderFeed()">
+                        <option value="insta">Instagram (Scroll Vertical)</option>
+                        <option value="yt">YouTube (Grelha c/ Auto-Play)</option>
                     </select>
-                    <button onclick="logout()" style="background:red; color:white; margin-top:30px;">Terminar Sessão</button>
+                    <button onclick="logout()" style="background:red; color:white; margin-top:40px;">Sair da Conta</button>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        let db_users = JSON.parse(localStorage.getItem('c_users') || '["From_celta.5"]');
-        let currentUser = localStorage.getItem('c_session');
-        let posts = [
-            { id: 1, user: 'Cervantes', text: 'Bem-vindo ao futuro!', img: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=500' },
-            { id: 2, user: 'NASA', text: 'Espaço profundo.', img: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500' }
+        let db = JSON.parse(localStorage.getItem('c_db') || '["From_celta.5"]');
+        let user = localStorage.getItem('c_user');
+
+        // Dados de exemplo (Simulando Vídeos e Fotos)
+        const content = [
+            { id: 1, user: 'Traveler', type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', title: 'A vida selvagem em 4K' },
+            { id: 2, user: 'SpaceX', type: 'video', src: 'https://www.w3schools.com/html/movie.mp4', title: 'Lançamento do Falcon 9' },
+            { id: 3, user: 'Cervantes', type: 'image', src: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=500', title: 'Wallpaper Gold' }
         ];
 
         window.onload = () => {
-            if(currentUser) {
+            if(user) {
                 document.getElementById('login-gate').style.display = 'none';
-                document.getElementById('current-user').innerText = "@" + currentUser;
-                if(currentUser === "From_celta.5") {
+                document.getElementById('user-display').innerText = "@" + user;
+                if(user === "From_celta.5") {
                     document.getElementById('admin-bar').style.display = 'flex';
-                    document.getElementById('user-count').innerText = "Utilizadores: " + db_users.length;
+                    document.getElementById('user-count').innerText = "Utilizadores: " + db.length;
                 }
                 renderFeed();
             }
-        }
+        };
 
-        function fazerLogin() {
-            const user = document.getElementById('user-in').value.trim();
-            if(!user) return;
-
-            if(user === "From_celta.5") { entrar(user); return; }
-
-            if(db_users.includes(user)) {
-                document.getElementById('error-msg').innerText = "Este nome de utilizador já existe!";
+        function validarLogin() {
+            const u = document.getElementById('user-in').value.trim();
+            if(!u) return;
+            if(u !== "From_celta.5" && db.includes(u)) {
+                document.getElementById('error-txt').innerText = "Este nome de utilizador já está em uso!";
             } else {
-                db_users.push(user);
-                localStorage.setItem('c_users', JSON.stringify(db_users));
-                entrar(user);
+                if(!db.includes(u)) db.push(u);
+                localStorage.setItem('c_db', JSON.stringify(db));
+                localStorage.setItem('c_user', u);
+                location.reload();
             }
         }
-
-        function entrar(u) { localStorage.setItem('c_session', u); location.reload(); }
 
         function tab(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
@@ -159,43 +162,55 @@
             el.classList.add('active');
         }
 
-        /* FEED INTELIGENTE */
-        function mudarEstiloFeed() { renderFeed(); }
-
+        /* SMART FEED ENGINE */
         function renderFeed() {
-            const style = document.getElementById('feed-style').value;
-            const container = document.getElementById('feed-container');
-            container.className = (style === 'yt') ? 'feed-grid-yt' : 'feed-insta';
-            
+            const style = document.getElementById('feed-choice').value;
+            const container = document.getElementById('feed-render');
+            container.className = style === 'yt' ? 'feed-grid-yt' : 'feed-insta';
             container.innerHTML = "";
-            posts.forEach(p => {
-                container.innerHTML += `
-                    <div class="post-card">
-                        <img src="${p.img}" class="${style === 'yt' ? 'yt-thumb' : 'insta-img'}">
-                        <div style="padding:12px;">
-                            <strong>@${p.user}</strong>
-                            <p style="font-size:0.9rem; opacity:0.8;">${p.text}</p>
-                        </div>
-                    </div>
-                `;
+
+            content.forEach(item => {
+                if(style === 'yt') {
+                    container.innerHTML += `
+                        <div class="yt-card" onmouseenter="playVid(this)" onmouseleave="stopVid(this)">
+                            <div class="yt-video-container">
+                                ${item.type === 'video' ? `<video loop muted src="${item.src}"></video>` : `<img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">`}
+                            </div>
+                            <div style="padding:10px 0;">
+                                <strong>${item.title}</strong><br>
+                                <small style="opacity:0.6">@${item.user} • 120k visualizações</small>
+                            </div>
+                        </div>`;
+                } else {
+                    container.innerHTML += `
+                        <div class="insta-card">
+                            <div style="padding:10px;"><strong>@${item.user}</strong></div>
+                            ${item.type === 'video' ? `<video autoplay muted loop class="insta-media" src="${item.src}"></video>` : `<img src="${item.src}" class="insta-media">`}
+                            <div style="padding:12px;"><strong>${item.user}</strong> ${item.title}</div>
+                        </div>`;
+                }
             });
         }
 
+        /* AUTO-PLAY YT LOGIC */
+        function playVid(el) { const v = el.querySelector('video'); if(v) v.play(); }
+        function stopVid(el) { const v = el.querySelector('video'); if(v) { v.pause(); v.currentTime = 0; } }
+
         /* CHAT WHATSAPP */
-        function abrirChat(nome) {
-            document.getElementById('chat-window').style.display = 'flex';
-            document.getElementById('target-name').innerText = nome;
+        function openChat(name) {
+            document.getElementById('chat-view').style.display = 'flex';
+            document.getElementById('chat-name').innerText = name;
         }
-        function fecharChat() { document.getElementById('chat-window').style.display = 'none'; }
-        
-        function enviarMensagem() {
-            const val = document.getElementById('msg-input').value;
-            if(!val) return;
-            document.getElementById('chat-body').innerHTML += `<div class="bubble me">${val}</div>`;
-            document.getElementById('msg-input').value = "";
+        function closeChat() { document.getElementById('chat-view').style.display = 'none'; }
+        function sendWA() {
+            const input = document.getElementById('wa-input');
+            if(!input.value) return;
+            document.getElementById('chat-msgs').innerHTML += `<div class="bubble me">${input.value}</div>`;
+            input.value = "";
+            document.getElementById('chat-msgs').scrollTop = 9999;
         }
 
-        function logout() { localStorage.removeItem('c_session'); location.reload(); }
+        function logout() { localStorage.removeItem('c_user'); location.reload(); }
     </script>
 </body>
 </html>
