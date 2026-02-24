@@ -3,175 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | The AI Super App</title>
+    <title>Cervantes | The God Mode v80</title>
     <style>
         :root { 
             --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; 
-            --blue: #1a73e8; --wa-green: #25d366; --ai-purple: #8e2de2;
+            --blue: #1a73e8; --wa-green: #25d366; --error: #d93025; --ai-purple: #8e2de2;
         }
         
         body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Google Sans', Roboto, sans-serif; height: 100vh; overflow: hidden; }
 
-        /* AUTH (GOOGLE STYLE) */
-        #auth-gate { position: fixed; inset: 0; background: #fff; z-index: 50000; display: flex; align-items: center; justify-content: center; color: #202124; }
-        .g-card { border: 1px solid #dadce0; padding: 40px; border-radius: 8px; width: 400px; text-align: left; }
+        /* GOOGLE AUTH SYSTEM - FULL FLOW */
+        #auth-gate { position: fixed; inset: 0; background: #fff; z-index: 100000; display: flex; align-items: center; justify-content: center; color: #202124; }
+        .g-card { border: 1px solid #dadce0; padding: 48px 40px 36px; border-radius: 8px; width: 450px; min-height: 500px; display: flex; flex-direction: column; position: relative; }
+        .g-step { display: none; flex-direction: column; height: 100%; flex-grow: 1; }
+        .g-step.active { display: flex; animation: fadeIn 0.4s; }
+        .g-logo { text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 10px; }
         .g-input { width: 100%; padding: 13px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; box-sizing: border-box; }
         .g-input:focus { border: 2px solid var(--blue); outline: none; }
+        .g-btn { background: var(--blue); color: white; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 500; cursor: pointer; align-self: flex-end; margin-top: auto; }
+        .g-btn-flat { color: var(--blue); background: none; border: none; font-weight: 500; cursor: pointer; align-self: flex-start; margin-top: auto; padding: 10px 0; }
+        .error-msg { color: var(--error); font-size: 12px; margin-top: 5px; font-weight: 500; }
 
-        /* LAYOUT */
+        /* MAIN APP STRUCTURE */
         .app-container { display: flex; height: 100vh; }
-        nav { width: 80px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 20px; background: #000; z-index: 100; }
-        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; opacity: 0.4; transition: 0.3s; padding: 12px; border-radius: 15px; }
-        nav i.active { opacity: 1; color: var(--gold); background: #1a1a1a; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+        nav { width: 75px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 20px; background: #000; }
+        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; opacity: 0.4; transition: 0.3s; padding: 12px; border-radius: 12px; }
+        nav i.active { opacity: 1; color: var(--gold); background: #1a1a1a; }
 
-        main { flex: 1; overflow-y: auto; position: relative; scroll-behavior: smooth; }
-        .page { display: none; height: 100%; animation: slideIn 0.3s ease-out; }
+        main { flex: 1; overflow-y: auto; position: relative; }
+        .page { display: none; height: 100%; }
         .active-page { display: block; }
 
-        /* AI CHAT BUBBLE (INTEGRADA) */
-        .ai-badge { background: linear-gradient(45deg, var(--ai-purple), #4a00e0); color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; margin-left: 5px; }
-        .ai-msg { background: rgba(142, 45, 226, 0.1); border-left: 3px solid var(--ai-purple); padding: 15px; border-radius: 10px; margin: 10px 0; }
+        /* STUDIO & CAMERA (SNAPCHAT/TIKTOK) */
+        .studio-cam { position: relative; height: 100%; background: #000; overflow: hidden; }
+        #webcam { width: 100%; height: 100%; object-fit: cover; }
+        .studio-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 30%); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 40px; }
+        .mode-selector { display: flex; gap: 20px; color: #fff; font-size: 12px; font-weight: bold; margin-bottom: 25px; overflow-x: auto; max-width: 90%; scrollbar-width: none; }
+        .mode-selector span { opacity: 0.6; cursor: pointer; white-space: nowrap; }
+        .mode-selector span.active { opacity: 1; color: var(--gold); border-bottom: 2px solid var(--gold); }
+        .capture-btn { width: 75px; height: 75px; border: 6px solid #fff; border-radius: 50%; cursor: pointer; }
 
-        /* MARKETPLACE & PAY */
-        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px; }
-        .product { background: var(--card); border-radius: 15px; border: 1px solid #333; overflow: hidden; transition: 0.3s; }
-        .product:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .wallet { background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), linear-gradient(135deg, #1e1e1e, #000); border: 1px solid var(--gold); padding: 30px; border-radius: 20px; margin: 20px; }
+        /* SEARCH (INSTA EXPLORE) */
+        .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .explore-item { aspect-ratio: 1/1; background: #1a1a1a; position: relative; }
 
-        /* REELS & STUDIO */
-        #cam-pro { width: 100%; height: 100%; object-fit: cover; }
-        .cam-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; background: linear-gradient(transparent, rgba(0,0,0,0.5)); }
+        /* TEXT POST (X STYLE) */
+        .text-post-area { width: 100%; background: #000; border: 1px solid #333; color: white; padding: 15px; border-radius: 10px; resize: none; margin-bottom: 10px; }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="auth-gate">
         <div class="g-card">
-            <h1 style="text-align:center; font-family:'Product Sans';">Cervantes</h1>
-            <h2 id="auth-title" style="font-weight:400;">Iniciar sessão</h2>
-            <p id="auth-desc">Use sua conta única Cervantes</p>
-            <input type="text" class="g-input" id="auth-user" placeholder="Nome de utilizador">
-            <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:center;">
-                <span style="color:var(--blue); cursor:pointer; font-weight:500;" id="auth-toggle" onclick="toggleAuth()">Criar conta</span>
-                <button onclick="handleAuth()" style="background:var(--blue); color:white; border:none; padding:10px 24px; border-radius:4px; cursor:pointer; font-weight:500;">Próximo</button>
+            <div class="g-logo"><span style="color:#4285F4">C</span><span style="color:#EA4335">e</span><span style="color:#FBBC05">r</span><span style="color:#4285F4">v</span><span style="color:#34A853">a</span><span style="color:#EA4335">n</span><span style="color:#4285F4">t</span><span style="color:#34A853">e</span><span style="color:#EA4335">s</span></div>
+            
+            <div id="step-login" class="g-step active">
+                <h2 style="font-weight:400; text-align:center;">Iniciar sessão</h2>
+                <p style="text-align:center; margin-bottom:20px;">Utilize a sua Conta Cervantes</p>
+                <input type="text" id="login-username" class="g-input" placeholder="Nome de utilizador">
+                <div style="display:flex; justify-content:space-between; margin-top:auto;">
+                    <button class="g-btn-flat" onclick="showStep('step-name')">Criar conta</button>
+                    <button class="g-btn" onclick="processLogin()">Seguinte</button>
+                </div>
+            </div>
+
+            <div id="step-name" class="g-step">
+                <h2 style="font-weight:400;">Criar conta</h2>
+                <p>Introduza o seu nome</p>
+                <input type="text" id="reg-fn" class="g-input" placeholder="Primeiro nome">
+                <input type="text" id="reg-ln" class="g-input" placeholder="Apelido">
+                <button class="g-btn" onclick="showStep('step-basic')">Seguinte</button>
+            </div>
+
+            <div id="step-basic" class="g-step">
+                <h2 style="font-weight:400;">Informações básicas</h2>
+                <p>Introduza o seu aniversário e género</p>
+                <input type="date" id="reg-dob" class="g-input">
+                <select id="reg-gender" class="g-input">
+                    <option value="">Género</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="nao-divulgar">Prefiro não divulgar</option>
+                </select>
+                <button class="g-btn" onclick="showStep('step-pass')">Seguinte</button>
+            </div>
+
+            <div id="step-pass" class="g-step">
+                <h2 style="font-weight:400;">Escolha uma palavra-passe</h2>
+                <p>Crie um código forte para proteger a sua conta</p>
+                <input type="password" id="reg-p1" class="g-input" placeholder="Palavra-passe">
+                <input type="password" id="reg-p2" class="g-input" placeholder="Confirmar">
+                <button class="g-btn" onclick="validatePasswords()">Seguinte</button>
+            </div>
+
+            <div id="step-user" class="g-step">
+                <h2 style="font-weight:400;">Crie o seu utilizador</h2>
+                <p>O seu @username deve ser único no mundo.</p>
+                <input type="text" id="reg-un" class="g-input" placeholder="Nome de utilizador">
+                <div id="un-error" class="error-msg" style="display:none;">Este nome de utilizador já existe. Tente outro.</div>
+                <button class="g-btn" onclick="finalizeRegistration()">Concluir</button>
             </div>
         </div>
     </div>
 
     <div class="app-container">
         <nav>
-            <i class="active" onclick="tab('home', this)" title="Feed">🏠</i>
-            <i onclick="tab('reels', this)" title="Reels">📱</i>
-            <i onclick="tab('studio', this)" title="Studio">📸</i>
-            <i onclick="tab('market', this)" title="Loja">🛒</i>
-            <i onclick="tab('chats', this)" title="Mensagens">💬</i>
-            <i onclick="tab('pay', this)" title="Carteira">💳</i>
+            <i class="active" onclick="tab('home', this)">🏠</i>
+            <i onclick="tab('search', this)">🔍</i>
+            <i onclick="tab('studio', this)">📸</i>
+            <i onclick="tab('chats', this)">💬</i>
+            <i onclick="tab('settings', this)">⚙️</i>
         </nav>
 
         <main>
             <section id="home" class="page active-page">
-                <div style="padding:20px;">
-                    <div class="ai-msg">
-                        <strong>Cervantes AI</strong> <span class="ai-badge">ONLINE</span>
-                        <p id="ai-greeting">Olá! Como posso ajudar o seu dia hoje?</p>
+                <div style="padding:15px; border-bottom:1px solid #222; font-weight:bold; font-size:1.2rem; color:var(--gold);">Cervantes Feed</div>
+                <div style="padding:15px;" id="feed-content">
+                    <div style="background:var(--card); border-radius:12px; margin-bottom:15px; border:1px solid #333;">
+                        <div style="padding:10px; display:flex; align-items:center; gap:10px;">
+                            <div style="width:30px; height:30px; border-radius:50%; background:var(--gold);"></div>
+                            <strong>@CervantesAdmin</strong>
+                        </div>
+                        <div style="height:350px; background:#111; display:grid; place-items:center;">[ Post Multimedia ]</div>
+                        <div style="padding:10px;">Bem-vindo à v80. Publica o teu primeiro Reel!</div>
                     </div>
-                    <div id="feed-render"></div>
                 </div>
             </section>
 
-            <section id="reels" class="page" style="overflow-y:scroll; snap-type:y mandatory;">
-                <div style="height:100%; snap-align:start; background:#050505; display:grid; place-items:center;"><h2>Viral Reel #1</h2></div>
-                <div style="height:100%; snap-align:start; background:#111; display:grid; place-items:center;"><h2>Viral Reel #2</h2></div>
+            <section id="search" class="page">
+                <div style="padding:15px;"><input type="text" class="g-input" placeholder="Pesquisar utilizadores, vídeos ou produtos..." style="background:#111; color:white; border:none;"></div>
+                <div class="explore-grid" id="explore-grid">
+                    <div class="explore-item"></div><div class="explore-item"></div><div class="explore-item"></div>
+                    <div class="explore-item" style="grid-row: span 2; grid-column: span 2;"></div><div class="explore-item"></div><div class="explore-item"></div>
+                </div>
             </section>
 
             <section id="studio" class="page">
-                <video id="cam-pro" autoplay playsinline></video>
-                <div class="cam-overlay">
-                    <div style="display:flex; justify-content:center; gap:30px; align-items:center;">
-                        <button onclick="alert('Filtro IA Aplicado')" style="background:var(--ai-purple); border:none; color:white; padding:10px; border-radius:10px;">IA Beauty</button>
-                        <div style="width:70px; height:70px; border:5px solid white; border-radius:50%;" onclick="alert('Gravado!')"></div>
-                        <button onclick="alert('Em Direto!')" style="color:red; background:white; padding:10px; border-radius:10px; font-weight:bold;">LIVE 🔴</button>
-                    </div>
-                </div>
-            </section>
+                <div class="studio-cam">
+                    <video id="webcam" autoplay playsinline></video>
+                    <div class="studio-overlay">
+                        <div style="position:absolute; top:20px; right:20px; display:flex; flex-direction:column; gap:20px; background:rgba(0,0,0,0.5); padding:10px; border-radius:20px;">
+                            <i>🔄</i><i>✨</i><i>🎵</i><i>⚡</i>
+                        </div>
+                        
+                        <div id="text-mode-ui" style="display:none; width:80%; margin-bottom:100px;">
+                            <textarea class="text-post-area" placeholder="O que está a acontecer?" rows="4"></textarea>
+                            <button style="background:var(--blue); border:none; color:white; padding:8px 20px; border-radius:20px; float:right;">Publicar</button>
+                        </div>
 
-            <section id="market" class="page">
-                <h2 style="padding:20px;">Marketplace</h2>
-                <div class="market-grid">
-                    <div class="product"><div style="height:150px; background:#222;"></div><div style="padding:15px;"><strong>Cervantes Glass</strong><br>899€</div></div>
-                    <div class="product"><div style="height:150px; background:#222;"></div><div style="padding:15px;"><strong>Smart Home Hub</strong><br>120€</div></div>
+                        <div class="mode-selector">
+                            <span onclick="setStudioMode('text')">TEXTO</span>
+                            <span onclick="setStudioMode('historia')">HISTÓRIA</span>
+                            <span onclick="setStudioMode('reels')" class="active">REELS</span>
+                            <span onclick="setStudioMode('video')">VÍDEO</span>
+                            <span onclick="setStudioMode('live')">LIVE</span>
+                            <span onclick="setStudioMode('ad')">ANÚNCIO</span>
+                        </div>
+                        <div class="capture-btn" id="capture-trigger"></div>
+                    </div>
                 </div>
             </section>
 
             <section id="chats" class="page">
-                <div style="padding:20px; background:var(--wa-green); color:black; font-weight:bold;">Cervantes Messenger</div>
+                <div style="background:var(--wa-green); padding:20px; color:black; font-weight:bold;">Nexus Messenger (WA/TG)</div>
                 <div id="chat-list"></div>
             </section>
 
-            <section id="pay" class="page">
-                <div class="wallet">
-                    <p style="opacity:0.6;">SALDO TOTAL</p>
-                    <h1 style="font-size:2.5rem; margin:10px 0;">€ 12.450,00</h1>
-                    <div style="display:flex; gap:10px; margin-top:20px;">
-                        <span style="background:var(--gold); color:black; padding:5px 10px; border-radius:5px; font-size:12px; font-weight:bold;">GOLD MEMBER</span>
-                    </div>
-                </div>
-                <div style="padding:20px;">
-                    <h3>Atividade Recente</h3>
-                    <p style="opacity:0.4;">Nenhuma transação hoje.</p>
-                </div>
+            <section id="settings" class="page" style="padding:20px;">
+                <h2>Definições de Conta</h2>
+                <div style="background:#111; padding:20px; border-radius:15px; margin-bottom:10px;">Perfil Profissional (YouTube Studio)</div>
+                <div style="background:#111; padding:20px; border-radius:15px; margin-bottom:10px;">Monetização de Anúncios</div>
+                <div style="background:#111; padding:20px; border-radius:15px; margin-bottom:10px;">Privacidade Snapchat Filters</div>
+                <button onclick="logout()" style="color:var(--error); margin-top:20px; background:none; border:none; font-weight:bold; cursor:pointer;">Terminar Sessão</button>
             </section>
         </main>
     </div>
 
     <script>
-        let isLogin = true;
-        let users = JSON.parse(localStorage.getItem('cv_users') || '["admin", "from_celta.5"]');
+        let db = JSON.parse(localStorage.getItem('cv_users_v80') || '[]');
         let me = localStorage.getItem('cv_me');
 
         window.onload = () => {
             if(me) {
                 document.getElementById('auth-gate').style.display = 'none';
-                document.getElementById('ai-greeting').innerText = `Olá, ${me}! Queres publicar algo novo hoje?`;
-                initCam();
-                renderFeed();
+                initCamera();
+                renderChats();
             }
         };
 
-        function toggleAuth() {
-            isLogin = !isLogin;
-            document.getElementById('auth-title').innerText = isLogin ? "Iniciar sessão" : "Criar conta";
-            document.getElementById('auth-desc').innerText = isLogin ? "Use sua conta única Cervantes" : "Escolha um nome de utilizador exclusivo";
-            document.getElementById('auth-toggle').innerText = isLogin ? "Criar conta" : "Já tenho conta";
+        function showStep(id) {
+            document.querySelectorAll('.g-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        function handleAuth() {
-            const user = document.getElementById('auth-user').value.trim().toLowerCase();
-            if(!user) return;
+        function validatePasswords() {
+            const p1 = document.getElementById('reg-p1').value;
+            const p2 = document.getElementById('reg-p2').value;
+            if(p1.length < 6 || p1 !== p2) return alert("Passwords não coincidem ou são fracas!");
+            showStep('step-user');
+        }
 
-            if(isLogin) {
-                if(users.includes(user)) {
-                    localStorage.setItem('cv_me', user);
-                    location.reload();
-                } else alert("Utilizador não encontrado!");
-            } else {
-                if(users.includes(user)) alert("Este nome já está em uso! Escolha outro.");
-                else {
-                    users.push(user);
-                    localStorage.setItem('cv_users', JSON.stringify(users));
-                    localStorage.setItem('cv_me', user);
-                    location.reload();
-                }
+        function finalizeRegistration() {
+            const un = document.getElementById('reg-un').value.trim().toLowerCase();
+            if(db.some(u => u.username === un)) {
+                document.getElementById('un-error').style.display = 'block';
+                return;
             }
+            
+            const userData = {
+                firstName: document.getElementById('reg-fn').value,
+                username: un,
+                pass: document.getElementById('reg-p1').value,
+                xp: 0
+            };
+            
+            db.push(userData);
+            localStorage.setItem('cv_users_v80', JSON.stringify(db));
+            localStorage.setItem('cv_me', un);
+            location.reload();
         }
 
-        async function initCam() {
+        function processLogin() {
+            const un = document.getElementById('login-username').value.trim().toLowerCase();
+            if(db.some(u => u.username === un)) {
+                localStorage.setItem('cv_me', un);
+                location.reload();
+            } else alert("Utilizador não existe!");
+        }
+
+        async function initCamera() {
             try {
-                const s = await navigator.mediaDevices.getUserMedia({video: true});
-                document.getElementById('cam-pro').srcObject = s;
+                const stream = await navigator.mediaDevices.getUserMedia({video: true});
+                document.getElementById('webcam').srcObject = stream;
             } catch(e) {}
+        }
+
+        function setStudioMode(mode) {
+            document.querySelectorAll('.mode-selector span').forEach(s => s.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('text-mode-ui').style.display = (mode === 'text') ? 'block' : 'none';
+            document.getElementById('webcam').style.opacity = (mode === 'text') ? '0.2' : '1';
         }
 
         function tab(id, el) {
@@ -179,37 +253,22 @@
             document.querySelectorAll('nav i').forEach(i => i.classList.remove('active'));
             document.getElementById(id).classList.add('active-page');
             el.classList.add('active');
-            if(id === 'chats') renderChats();
-        }
-
-        function renderFeed() {
-            const feed = document.getElementById('feed-render');
-            feed.innerHTML = `
-                <div style="background:var(--card); padding:15px; border-radius:15px; margin-top:20px;">
-                    <strong>@CervantesAI</strong> <span class="ai-badge">PRO</span>
-                    <p>O mercado de ações subiu 2% hoje. Queres que eu invista parte do teu saldo Cervantes Pay?</p>
-                    <button style="background:var(--ai-purple); border:none; color:white; padding:8px 15px; border-radius:5px;">Analisar Investimento</button>
-                </div>
-            `;
         }
 
         function renderChats() {
             const list = document.getElementById('chat-list');
-            list.innerHTML = `
-                <div style="display:flex; gap:15px; padding:20px; border-bottom:1px solid #111; background: rgba(142, 45, 226, 0.05);">
-                    <div style="width:50px; height:50px; border-radius:50%; background:var(--ai-purple); display:grid; place-items:center;">🤖</div>
-                    <div><strong>Cervantes AI Assistant</strong><br><small style="color:var(--ai-purple)">Sempre disponível</small></div>
-                </div>
-            `;
-            users.forEach(u => {
-                if(u === me) return;
+            list.innerHTML = "";
+            db.forEach(u => {
+                if(u.username === me) return;
                 list.innerHTML += `
-                    <div style="display:flex; gap:15px; padding:20px; border-bottom:1px solid #111;">
-                        <div style="width:50px; height:50px; border-radius:50%; background:#333; display:grid; place-items:center;">${u[0].toUpperCase()}</div>
-                        <div><strong>${u}</strong><br><small style="opacity:0.5">Visto recentemente</small></div>
+                    <div style="padding:15px; border-bottom:1px solid #222; display:flex; gap:15px; align-items:center;">
+                        <div style="width:50px; height:50px; border-radius:50%; background:#333; display:grid; place-items:center;">${u.username[0].toUpperCase()}</div>
+                        <div><strong>${u.username}</strong><br><small style="color:var(--wa-green)">Online</small></div>
                     </div>`;
             });
         }
+
+        function logout() { localStorage.removeItem('cv_me'); location.reload(); }
     </script>
 </body>
 </html>
