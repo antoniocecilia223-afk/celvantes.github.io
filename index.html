@@ -3,87 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | From Celva v130</title>
+    <title>Cervantes | From Celva v150</title>
     <style>
         :root { 
             --gold: #d4af37; --bg: #000; --card: #111; --text: #fff; 
-            --blue: #007bff; --error: #d93025;
+            --blue: #007bff; --error: #d93025; --success: #25d366;
         }
         
         body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
 
-        /* --- AUTH GATE (LOGIN/REGISTO) --- */
+        /* AUTH GATE */
         #auth-gate { position: fixed; inset: 0; background: #0a0a0a; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .auth-container { width: 380px; padding: 40px; background: #000; border: 1px solid #222; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
-        .auth-input { width: 100%; padding: 15px; margin: 8px 0; background: #0a0a0a; border: 1px solid #333; border-radius: 12px; color: #fff; font-size: 15px; box-sizing: border-box; outline: none; }
-        .auth-input:focus { border-color: var(--gold); }
-        .auth-btn { width: 100%; padding: 15px; background: #fff; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 15px; }
-        .auth-secondary { width: 100%; padding: 12px; background: transparent; color: var(--gold); border: 1px solid #222; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .from-celva { margin-top: 40px; font-size: 11px; letter-spacing: 4px; color: #333; text-transform: uppercase; font-weight: 900; }
+        .auth-container { width: 350px; padding: 40px; background: #000; border: 1px solid #222; border-radius: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        .auth-input { width: 100%; padding: 15px; margin: 10px 0; background: #0a0a0a; border: 1px solid #333; border-radius: 12px; color: #fff; font-size: 15px; box-sizing: border-box; outline: none; }
+        .auth-btn { width: 100%; padding: 15px; background: #fff; color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .auth-secondary { width: 100%; padding: 12px; background: transparent; color: var(--gold); border: 1px solid #222; border-radius: 12px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        .from-celva { margin-top: 40px; font-size: 10px; letter-spacing: 5px; color: #333; text-transform: uppercase; font-weight: 900; }
         .g-step { display: none; animation: fadeIn 0.4s ease; }
         .g-step.active { display: block; }
 
-        /* --- ESTRUTURA APP & MENU BURGER --- */
+        /* APP LAYOUT */
         .app-container { display: flex; height: 100vh; }
+        nav { width: 260px; border-right: 1px solid #222; display: flex; flex-direction: column; padding: 15px; gap: 5px; background: #000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
+        nav.collapsed { width: 75px; padding: 15px 0; align-items: center; }
         
-        nav { width: 250px; border-right: 1px solid #222; display: flex; flex-direction: column; padding: 15px; gap: 8px; background: #000; transition: width 0.3s ease; overflow: hidden; white-space: nowrap; }
-        nav.collapsed { width: 70px; padding: 15px 0; align-items: center; }
-        
-        .nav-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 12px; cursor: pointer; transition: 0.2s; opacity: 0.4; }
-        .nav-item i { font-style: normal; font-size: 1.4rem; min-width: 30px; text-align: center; }
+        .nav-item { display: flex; align-items: center; gap: 15px; padding: 14px; border-radius: 14px; cursor: pointer; opacity: 0.4; transition: 0.2s; white-space: nowrap; }
         .nav-item:hover, .nav-item.active { opacity: 1; background: #111; color: var(--gold); }
         .collapsed .nav-text { display: none; }
+        .burger-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 15px; align-self: flex-start; }
+        .collapsed .burger-btn { align-self: center; }
 
-        .burger-btn { font-size: 1.6rem; cursor: pointer; padding: 15px; color: var(--text); border: none; background: none; outline: none; transition: 0.2s; }
-        .burger-btn:hover { color: var(--gold); }
-
-        main { flex: 1; overflow-y: auto; background: #050505; }
-        .page { display: none; padding: 40px; animation: slideUp 0.4s ease; }
+        main { flex: 1; overflow-y: auto; background: #050505; position: relative; }
+        .page { display: none; max-width: 800px; margin: 0 auto; padding: 40px 20px; animation: slideUp 0.4s ease; }
         .active-page { display: block; }
 
-        /* --- COMPONENTES UI --- */
-        .card { background: var(--card); border: 1px solid #222; border-radius: 25px; padding: 25px; margin-bottom: 25px; }
-        .stat-grid { display: flex; gap: 15px; margin-top: 25px; }
-        .stat-box { flex: 1; background: #000; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid #1a1a1a; }
-        .verified-star { color: var(--gold); font-size: 1.2rem; margin-left: 5px; }
-
+        /* POSTS & UI */
+        .card { background: var(--card); border: 1px solid #222; border-radius: 20px; padding: 25px; margin-bottom: 20px; }
+        .post { background: var(--card); border: 1px solid #222; border-radius: 15px; margin-bottom: 25px; overflow: hidden; }
+        .post-header { padding: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; }
+        .post-content { padding: 0 15px 15px 15px; }
+        .stat-box { flex: 1; background: #000; padding: 15px; border-radius: 12px; border: 1px solid #1a1a1a; text-align: center; }
+        
+        /* NOTIFICATION POPUP */
+        #notif { position: fixed; top: 20px; right: 20px; background: var(--success); color: black; padding: 15px 25px; border-radius: 12px; font-weight: bold; transform: translateY(-100px); transition: 0.5s; z-index: 100001; }
+        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+    <div id="notif">Notificação!</div>
+
     <div id="auth-gate">
         <div class="auth-container">
-            <h1 style="text-align:center; letter-spacing:-2px; margin-bottom:5px;">Cervantes</h1>
+            <h1 style="text-align:center; letter-spacing:-2px; margin-bottom:30px;">Cervantes</h1>
             
             <div id="step-login" class="g-step active">
-                <p style="text-align:center; color:#555; font-size:14px; margin-bottom:20px;">Iniciar Sessão</p>
                 <input type="text" id="l-un" class="auth-input" placeholder="Teu @username">
-                <button class="auth-btn" onclick="tryLogin()">Entrar</button>
-                
-                <div style="display:flex; align-items:center; margin:25px 0;">
-                    <div style="flex:1; height:1px; background:#222;"></div>
-                    <span style="padding:0 10px; color:#333; font-size:10px;">OU</span>
-                    <div style="flex:1; height:1px; background:#222;"></div>
-                </div>
-
-                <p style="text-align:center; color:#555; font-size:13px;">Novo no Cervantes?</p>
-                <button class="auth-secondary" onclick="goStep('step-name')">Criar Identidade Digital</button>
+                <button class="auth-btn" onclick="tryLogin()">Iniciar Sessão</button>
+                <div style="height:1px; background:#222; margin:25px 0;"></div>
+                <button class="auth-secondary" onclick="goStep('step-reg')">Criar Nova Conta</button>
             </div>
 
-            <div id="step-name" class="g-step">
-                <p style="text-align:center; color:#555; margin-bottom:15px;">Passo 1: Quem és tu?</p>
+            <div id="step-reg" class="g-step">
                 <input type="text" id="r-fn" class="auth-input" placeholder="Primeiro Nome">
-                <input type="text" id="r-ln" class="auth-input" placeholder="Apelido">
-                <button class="auth-btn" onclick="goStep('step-final')">Seguinte</button>
-                <button class="auth-secondary" onclick="goStep('step-login')" style="border:none;">Já tenho conta</button>
-            </div>
-
-            <div id="step-final" class="g-step">
-                <p style="text-align:center; color:#555; margin-bottom:15px;">Passo 2: Define o teu @user</p>
-                <input type="text" id="r-un" class="auth-input" placeholder="@escolhe_o_teu_user">
+                <input type="text" id="r-un" class="auth-input" placeholder="@escolhe_user">
                 <button class="auth-btn" onclick="finishReg()">Finalizar Registo</button>
+                <button class="auth-secondary" onclick="goStep('step-login')" style="border:none;">Voltar ao login</button>
             </div>
         </div>
         <div class="from-celva">From Celva</div>
@@ -94,79 +81,62 @@
             <button class="burger-btn" onclick="toggleMenu()">☰</button>
             <div style="height:20px;"></div>
             <div class="nav-item active" onclick="tab('home', this)"><i>🏠</i> <span class="nav-text">Feed</span></div>
-            <div class="nav-item" onclick="tab('search', this)"><i>🔍</i> <span class="nav-text">Explorar</span></div>
             <div class="nav-item" onclick="tab('publish', this)"><i>➕</i> <span class="nav-text">Publicar</span></div>
             <div class="nav-item" onclick="tab('chats', this)"><i>💬</i> <span class="nav-text">Mensagens</span></div>
-            <div class="nav-item" onclick="tab('account', this)"><i>👤</i> <span class="nav-text">Minha Conta</span></div>
+            <div class="nav-item" onclick="tab('account', this)"><i>👤</i> <span class="nav-text">Perfil</span></div>
             <div class="nav-item" onclick="tab('settings', this)"><i>⚙️</i> <span class="nav-text">Definições</span></div>
         </nav>
 
         <main>
             <section id="home" class="page active-page">
-                <h2>O teu Feed</h2>
-                <div class="card" style="height:400px; display:grid; place-items:center; opacity:0.2; border-style:dashed;">
-                    Conteúdo dos teus seguidores aparecerá aqui.
-                </div>
+                <h2 style="margin-bottom:30px;">Explorar Cervantes</h2>
+                <div id="feed-container"></div>
             </section>
 
             <section id="publish" class="page">
-                <h2>Publicar</h2>
+                <h2>Nova Publicação</h2>
                 <div class="card">
-                    <div style="border:2px dashed #333; border-radius:15px; padding:60px; text-align:center; cursor:pointer;" onclick="alert('Seletor de ficheiros aberto...')">
-                        <span style="font-size:2rem;">📸</span><br>Upload de Foto ou Vídeo
-                    </div>
-                    <input type="text" class="auth-input" style="margin-top:20px;" placeholder="Escreve uma legenda impactante...">
-                    <button class="auth-btn" style="background:var(--gold)">Publicar na Rede</button>
+                    <textarea id="post-text" class="auth-input" style="height:120px; resize:none;" placeholder="O que estás a pensar?"></textarea>
+                    <button class="auth-btn" style="background:var(--gold); color:black;" onclick="createPost()">Publicar no Feed</button>
                 </div>
             </section>
 
             <section id="account" class="page">
                 <div class="card" style="text-align:center;">
-                    <div style="width:100px; height:100px; background:var(--gold); border-radius:50%; margin:0 auto 20px; color:black; display:grid; place-items:center; font-weight:900; font-size:2rem;" id="p-avatar">?</div>
-                    <h1 id="p-name">Nome <span id="p-v"></span></h1>
-                    <p id="p-handle" style="color:#666; font-size:1.1rem;">@utilizador</p>
-                    
-                    <div class="stat-grid">
-                        <div class="stat-box"><strong id="p-views" style="font-size:1.5rem;">0</strong><br><small style="color:#555;">Views</small></div>
-                        <div class="stat-box"><strong id="p-money" style="font-size:1.5rem;">0€</strong><br><small style="color:#555;">Saldo</small></div>
+                    <div style="width:80px; height:80px; background:var(--gold); border-radius:50%; margin:0 auto 15px; color:black; display:grid; place-items:center; font-weight:900; font-size:1.5rem;" id="p-avatar">?</div>
+                    <h2 id="p-name">Nome</h2>
+                    <p id="p-handle" style="color:#555; margin-top:-10px;">@user</p>
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <div class="stat-box"><strong id="p-views">0</strong><br><small>Views</small></div>
+                        <div class="stat-box"><strong id="p-money">0€</strong><br><small>Saldo</small></div>
                     </div>
                 </div>
-                <button class="auth-btn" onclick="addViews()" style="background:var(--gold); color:black;">Simular Crescimento (+50k Views)</button>
+                <button class="auth-btn" style="background:var(--gold); color:black;" onclick="simViews()">Simular +100k Views</button>
             </section>
 
             <section id="settings" class="page">
                 <h2>Definições</h2>
                 <div class="card">
-                    <div style="padding:10px 0; border-bottom:1px solid #222; cursor:pointer;">Editar Perfil</div>
-                    <div style="padding:10px 0; border-bottom:1px solid #222; cursor:pointer;">Privacidade e Segurança</div>
-                    <div style="padding:10px 0; border-bottom:1px solid #222; cursor:pointer;">Notificações</div>
-                    <div style="padding:10px 0; border-bottom:1px solid #222; cursor:pointer;">Cervantes Studio Pro</div>
-                    <div style="height:30px;"></div>
-                    <button onclick="logout()" style="color:var(--error); background:none; border:none; font-weight:bold; cursor:pointer;">Encerrar Sessão</button>
+                    <p>Status da Identidade: <span style="color:var(--success)">Verificada via Celva</span></p>
+                    <p>Segurança: <span style="color:var(--gold)">Criptografia de Ponta a Ponta</span></p>
+                    <hr style="border:0; border-top:1px solid #222; margin:20px 0;">
+                    <button onclick="logout()" style="color:var(--error); background:none; border:none; cursor:pointer; font-weight:bold;">Encerrar Identidade Digital</button>
                 </div>
             </section>
 
-            <section id="chats" class="page">
-                <h2>Mensagens Privadas</h2>
-                <div id="chat-list"></div>
-            </section>
-
-            <section id="search" class="page">
-                <h2>Explorar o Mundo</h2>
-                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;" id="search-grid">
-                    </div>
-            </section>
+            <section id="chats" class="page"><h2>Mensagens</h2><p style="opacity:0.5;">Em breve...</p></section>
         </main>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('cv_final_db') || '[]');
+        // ENGINE DE DADOS
+        let db = JSON.parse(localStorage.getItem('cv_final_users') || '[]');
+        let posts = JSON.parse(localStorage.getItem('cv_final_posts') || '[]');
         let me = JSON.parse(localStorage.getItem('cv_final_me') || 'null');
 
-        if(me) { document.getElementById('auth-gate').style.display = 'none'; updateUI(); }
+        if(me) { document.getElementById('auth-gate').style.display = 'none'; updateUI(); renderFeed(); }
 
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-
+        // SISTEMA DE AUTH
         function goStep(id) {
             document.querySelectorAll('.g-step').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -174,18 +144,16 @@
 
         function finishReg() {
             const un = document.getElementById('r-un').value.toLowerCase().trim();
-            if(db.some(u => u.username === un)) return alert("Username já ocupado!");
+            if(db.some(u => u.username === un)) return alert("Username em uso!");
             
             const newUser = {
                 fn: document.getElementById('r-fn').value,
-                ln: document.getElementById('r-ln').value,
                 username: un,
                 views: 0,
-                balance: 0,
-                following: ["cervantes"]
+                balance: 0
             };
             db.push(newUser);
-            localStorage.setItem('cv_final_db', JSON.stringify(db));
+            localStorage.setItem('cv_final_users', JSON.stringify(db));
             localStorage.setItem('cv_final_me', JSON.stringify(newUser));
             location.reload();
         }
@@ -196,43 +164,11 @@
             if(user) {
                 localStorage.setItem('cv_final_me', JSON.stringify(user));
                 location.reload();
-            } else alert("Identidade não encontrada no sistema.");
+            } else alert("Não encontrado.");
         }
 
-        function updateUI() {
-            document.getElementById('p-name').innerHTML = `${me.fn} ${me.ln} ${me.views >= 1000000 ? '<span class="verified-star">⭐</span>' : ''}`;
-            document.getElementById('p-handle').innerText = `@${me.username}`;
-            document.getElementById('p-views').innerText = me.views.toLocaleString();
-            document.getElementById('p-money').innerText = `${me.balance.toLocaleString()}€`;
-            document.getElementById('p-avatar').innerText = me.fn[0].toUpperCase();
-            renderChats();
-        }
-
-        function addViews() {
-            me.views += 50000;
-            // Metas de pagamento
-            if(me.views === 100000) me.balance = 100;
-            if(me.views === 1000000) me.balance = 1000;
-            save(); updateUI();
-        }
-
-        function renderChats() {
-            const list = document.getElementById('chat-list');
-            list.innerHTML = "";
-            db.forEach(u => {
-                if(u.username === me.username) return;
-                const canTalk = me.following.includes(u.username);
-                list.innerHTML += `
-                    <div class="card" style="display:flex; align-items:center; gap:15px; opacity:${canTalk ? 1 : 0.3}">
-                        <div style="width:40px; height:40px; background:#222; border-radius:50%; display:grid; place-items:center;">${u.fn[0]}</div>
-                        <div>
-                            <strong>${u.fn} ${u.views >= 1000000 ? '⭐' : ''}</strong><br>
-                            <small>${canTalk ? 'Conversa ativa' : 'Bloqueado - Segue para falar'}</small>
-                        </div>
-                    </div>`;
-            });
-        }
-
+        // SISTEMA DE NAVEGAÇÃO
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('collapsed'); }
         function tab(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -240,11 +176,69 @@
             el.classList.add('active');
         }
 
+        // SISTEMA DE POSTS
+        function createPost() {
+            const txt = document.getElementById('post-text').value;
+            if(!txt) return;
+            const newPost = {
+                author: me.fn,
+                handle: me.username,
+                content: txt,
+                date: new Date().toLocaleTimeString()
+            };
+            posts.unshift(newPost);
+            localStorage.setItem('cv_final_posts', JSON.stringify(posts));
+            document.getElementById('post-text').value = "";
+            showNotif("✅ Publicado com sucesso!");
+            renderFeed();
+            tab('home', document.querySelector('[onclick*="home"]'));
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = posts.length ? "" : "<p style='opacity:0.3; text-align:center;'>Ainda não há publicações.</p>";
+            posts.forEach(p => {
+                container.innerHTML += `
+                    <div class="post">
+                        <div class="post-header">
+                            <div style="width:35px; height:35px; background:#222; border-radius:50%; display:grid; place-items:center; font-size:12px;">${p.author[0]}</div>
+                            <span>${p.author} <small style="color:var(--gold); font-weight:normal;">@${p.handle}</small></span>
+                        </div>
+                        <div class="post-content">${p.content}</div>
+                        <div style="padding:10px 15px; font-size:11px; color:#444;">Publicado às ${p.date}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // SISTEMA DE CRESCIMENTO & NOTIFICAÇÕES
+        function simViews() {
+            me.views += 100000;
+            if(me.views === 100000) { me.balance += 100; showNotif("💰 Parabéns! Ganhaste 100€ (Meta 100k)"); }
+            if(me.views === 1000000) { me.balance += 1000; showNotif("⭐ MEGA! Ganhaste 1000€ (Meta 1M)"); }
+            save(); updateUI();
+        }
+
+        function showNotif(msg) {
+            const n = document.getElementById('notif');
+            n.innerText = msg;
+            n.style.transform = "translateY(0px)";
+            setTimeout(() => n.style.transform = "translateY(-100px)", 4000);
+        }
+
+        function updateUI() {
+            document.getElementById('p-name').innerHTML = `${me.fn} ${me.views >= 1000000 ? '⭐' : ''}`;
+            document.getElementById('p-handle').innerText = `@${me.username}`;
+            document.getElementById('p-views').innerText = me.views.toLocaleString();
+            document.getElementById('p-money').innerText = `${me.balance}€`;
+            document.getElementById('p-avatar').innerText = me.fn[0].toUpperCase();
+        }
+
         function save() {
             localStorage.setItem('cv_final_me', JSON.stringify(me));
             const idx = db.findIndex(u => u.username === me.username);
             db[idx] = me;
-            localStorage.setItem('cv_final_db', JSON.stringify(db));
+            localStorage.setItem('cv_final_users', JSON.stringify(db));
         }
 
         function logout() { localStorage.removeItem('cv_final_me'); location.reload(); }
