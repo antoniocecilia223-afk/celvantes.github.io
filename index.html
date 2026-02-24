@@ -3,210 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cervantes | Super App Universal</title>
+    <title>Cervantes | The AI Super App</title>
     <style>
         :root { 
             --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; 
-            --blue: #0095f6; --wa-green: #00a884; --red: #ff3b30;
+            --blue: #1a73e8; --wa-green: #25d366; --ai-purple: #8e2de2;
         }
         
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Google Sans', Roboto, sans-serif; height: 100vh; overflow: hidden; }
 
-        /* ESTILOS BASE */
-        .badge { background: var(--blue); color: white; border-radius: 50%; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; margin-left: 4px; vertical-align: middle; border: 1px solid #000; font-weight: bold; }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #121212; border: 1px solid #333; color: #fff; border-radius: 12px; outline: none; box-sizing: border-box; }
+        /* AUTH (GOOGLE STYLE) */
+        #auth-gate { position: fixed; inset: 0; background: #fff; z-index: 50000; display: flex; align-items: center; justify-content: center; color: #202124; }
+        .g-card { border: 1px solid #dadce0; padding: 40px; border-radius: 8px; width: 400px; text-align: left; }
+        .g-input { width: 100%; padding: 13px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; box-sizing: border-box; }
+        .g-input:focus { border: 2px solid var(--blue); outline: none; }
 
-        /* LAYOUT PRINCIPAL */
+        /* LAYOUT */
         .app-container { display: flex; height: 100vh; }
-        nav { width: 70px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 30px; background: #000; }
-        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; opacity: 0.4; transition: 0.3s; }
-        nav i.active { opacity: 1; color: var(--gold); transform: scale(1.2); }
+        nav { width: 80px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 20px; background: #000; z-index: 100; }
+        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; opacity: 0.4; transition: 0.3s; padding: 12px; border-radius: 15px; }
+        nav i.active { opacity: 1; color: var(--gold); background: #1a1a1a; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
 
-        main { flex: 1; overflow-y: auto; padding-bottom: 80px; }
-        .page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        main { flex: 1; overflow-y: auto; position: relative; scroll-behavior: smooth; }
+        .page { display: none; height: 100%; animation: slideIn 0.3s ease-out; }
         .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CHAT E MENSAGENS */
-        #chat-window { position: fixed; inset: 0; background: #0b141a; z-index: 9000; display: none; flex-direction: column; }
-        .chat-header { background: #202c33; padding: 12px 18px; display: flex; align-items: center; gap: 12px; }
-        .chat-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
-        .bubble { padding: 10px 14px; border-radius: 15px; max-width: 70%; font-size: 0.9rem; }
-        .sent { background: #005c4b; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .received { background: #202c33; align-self: flex-start; border-bottom-left-radius: 2px; }
+        /* AI CHAT BUBBLE (INTEGRADA) */
+        .ai-badge { background: linear-gradient(45deg, var(--ai-purple), #4a00e0); color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; margin-left: 5px; }
+        .ai-msg { background: rgba(142, 45, 226, 0.1); border-left: 3px solid var(--ai-purple); padding: 15px; border-radius: 10px; margin: 10px 0; }
 
-        /* INTERFACE DE CHAMADA (CALL) */
-        #call-ui { position: fixed; inset: 0; background: #121212; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: space-around; padding: 50px 0; }
-        #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 150px; background: #000; border-radius: 10px; object-fit: cover; border: 2px solid var(--gold); transform: scaleX(-1); }
-        .call-avatar { width: 120px; height: 120px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; font-size: 3rem; color: #000; font-weight: bold; margin-bottom: 20px; }
-        .call-actions { display: flex; gap: 30px; }
-        .call-btn { width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer; display: grid; place-items: center; font-size: 1.5rem; color: white; }
-        .btn-hangup { background: var(--red); }
-        .btn-accept { background: var(--wa-green); }
+        /* MARKETPLACE & PAY */
+        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px; }
+        .product { background: var(--card); border-radius: 15px; border: 1px solid #333; overflow: hidden; transition: 0.3s; }
+        .product:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .wallet { background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), linear-gradient(135deg, #1e1e1e, #000); border: 1px solid var(--gold); padding: 30px; border-radius: 20px; margin: 20px; }
 
-        /* LOGIN */
-        #auth-gate { position: fixed; inset: 0; background: #000; z-index: 11000; display: flex; align-items: center; justify-content: center; }
+        /* REELS & STUDIO */
+        #cam-pro { width: 100%; height: 100%; object-fit: cover; }
+        .cam-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; background: linear-gradient(transparent, rgba(0,0,0,0.5)); }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div id="auth-gate">
-        <div style="text-align: center; width: 300px;">
-            <h1 style="color:var(--gold); font-size: 3rem; margin-bottom: 5px;">Cervantes</h1>
-            <p style="opacity:0.5; margin-bottom: 30px;">Rede Real v15</p>
-            <input type="text" id="u-user" placeholder="Como te chamas?">
-            <button onclick="login()" style="width:100%; padding:15px; background:var(--blue); border:none; color:white; border-radius:12px; font-weight:bold; cursor:pointer;">ENTRAR</button>
+        <div class="g-card">
+            <h1 style="text-align:center; font-family:'Product Sans';">Cervantes</h1>
+            <h2 id="auth-title" style="font-weight:400;">Iniciar sessão</h2>
+            <p id="auth-desc">Use sua conta única Cervantes</p>
+            <input type="text" class="g-input" id="auth-user" placeholder="Nome de utilizador">
+            <div style="margin-top:50px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--blue); cursor:pointer; font-weight:500;" id="auth-toggle" onclick="toggleAuth()">Criar conta</span>
+                <button onclick="handleAuth()" style="background:var(--blue); color:white; border:none; padding:10px 24px; border-radius:4px; cursor:pointer; font-weight:500;">Próximo</button>
+            </div>
         </div>
     </div>
 
     <div class="app-container">
         <nav>
-            <i class="active" onclick="tab('home', this)">🏠</i>
-            <i onclick="tab('inbox', this)">💬</i>
-            <i onclick="tab('settings', this)">⚙️</i>
+            <i class="active" onclick="tab('home', this)" title="Feed">🏠</i>
+            <i onclick="tab('reels', this)" title="Reels">📱</i>
+            <i onclick="tab('studio', this)" title="Studio">📸</i>
+            <i onclick="tab('market', this)" title="Loja">🛒</i>
+            <i onclick="tab('chats', this)" title="Mensagens">💬</i>
+            <i onclick="tab('pay', this)" title="Carteira">💳</i>
         </nav>
+
         <main>
             <section id="home" class="page active-page">
-                <h2>Explorar</h2>
-                <div id="user-list"></div>
+                <div style="padding:20px;">
+                    <div class="ai-msg">
+                        <strong>Cervantes AI</strong> <span class="ai-badge">ONLINE</span>
+                        <p id="ai-greeting">Olá! Como posso ajudar o seu dia hoje?</p>
+                    </div>
+                    <div id="feed-render"></div>
+                </div>
             </section>
-            <section id="inbox" class="page">
-                <h2>Mensagens Privadas</h2>
+
+            <section id="reels" class="page" style="overflow-y:scroll; snap-type:y mandatory;">
+                <div style="height:100%; snap-align:start; background:#050505; display:grid; place-items:center;"><h2>Viral Reel #1</h2></div>
+                <div style="height:100%; snap-align:start; background:#111; display:grid; place-items:center;"><h2>Viral Reel #2</h2></div>
+            </section>
+
+            <section id="studio" class="page">
+                <video id="cam-pro" autoplay playsinline></video>
+                <div class="cam-overlay">
+                    <div style="display:flex; justify-content:center; gap:30px; align-items:center;">
+                        <button onclick="alert('Filtro IA Aplicado')" style="background:var(--ai-purple); border:none; color:white; padding:10px; border-radius:10px;">IA Beauty</button>
+                        <div style="width:70px; height:70px; border:5px solid white; border-radius:50%;" onclick="alert('Gravado!')"></div>
+                        <button onclick="alert('Em Direto!')" style="color:red; background:white; padding:10px; border-radius:10px; font-weight:bold;">LIVE 🔴</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="market" class="page">
+                <h2 style="padding:20px;">Marketplace</h2>
+                <div class="market-grid">
+                    <div class="product"><div style="height:150px; background:#222;"></div><div style="padding:15px;"><strong>Cervantes Glass</strong><br>899€</div></div>
+                    <div class="product"><div style="height:150px; background:#222;"></div><div style="padding:15px;"><strong>Smart Home Hub</strong><br>120€</div></div>
+                </div>
+            </section>
+
+            <section id="chats" class="page">
+                <div style="padding:20px; background:var(--wa-green); color:black; font-weight:bold;">Cervantes Messenger</div>
                 <div id="chat-list"></div>
             </section>
-            <section id="settings" class="page">
-                <h2>Definições</h2>
-                <button onclick="logout()" style="color:var(--red); background:none; border:none; font-weight:bold; cursor:pointer;">Sair da Conta</button>
+
+            <section id="pay" class="page">
+                <div class="wallet">
+                    <p style="opacity:0.6;">SALDO TOTAL</p>
+                    <h1 style="font-size:2.5rem; margin:10px 0;">€ 12.450,00</h1>
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <span style="background:var(--gold); color:black; padding:5px 10px; border-radius:5px; font-size:12px; font-weight:bold;">GOLD MEMBER</span>
+                    </div>
+                </div>
+                <div style="padding:20px;">
+                    <h3>Atividade Recente</h3>
+                    <p style="opacity:0.4;">Nenhuma transação hoje.</p>
+                </div>
             </section>
         </main>
     </div>
 
-    <div id="chat-window">
-        <div class="chat-header">
-            <span onclick="closeChat()" style="cursor:pointer; font-size:1.2rem;">←</span>
-            <div id="c-avatar" style="width:35px; height:35px; border-radius:50%; background:var(--gold); color:black; display:grid; place-items:center; font-weight:bold;">?</div>
-            <strong id="c-name" style="flex:1;">Nome</strong>
-            <div style="display:flex; gap:15px; font-size:1.3rem;">
-                <span onclick="startCall('audio')" style="cursor:pointer;">📞</span>
-                <span onclick="startCall('video')" style="cursor:pointer;">🎥</span>
-            </div>
-        </div>
-        <div class="chat-content" id="chat-box"></div>
-        <div style="padding:15px; display:flex; gap:10px; background:#1c1c1c;">
-            <input type="text" id="chat-in" placeholder="Escreve aqui..." style="margin:0; flex:1;">
-            <button onclick="send()" style="background:var(--wa-green); border:none; color:white; border-radius:50%; width:45px; height:45px;">➤</button>
-        </div>
-    </div>
-
-    <div id="call-ui">
-        <video id="local-video" autoplay playsinline muted></video>
-        <div style="text-align:center;">
-            <div class="call-avatar" id="call-partner-avatar">?</div>
-            <h2 id="call-partner-name">Nome</h2>
-            <p id="call-status">A chamar...</p>
-        </div>
-        <div class="call-actions">
-            <button class="call-btn btn-hangup" onclick="endCall()">✖</button>
-            <button class="call-btn btn-accept" id="btn-answer" style="display:none;" onclick="acceptCall()">✔</button>
-        </div>
-    </div>
-
     <script>
+        let isLogin = true;
+        let users = JSON.parse(localStorage.getItem('cv_users') || '["admin", "from_celta.5"]');
         let me = localStorage.getItem('cv_me');
-        let users = JSON.parse(localStorage.getItem('cv_users') || '["Admin", "From_celta.5"]');
-        let chats = JSON.parse(localStorage.getItem('cv_chats') || '{}');
-        let activePartner = "";
-        let stream = null;
 
         window.onload = () => {
             if(me) {
                 document.getElementById('auth-gate').style.display = 'none';
-                renderUsers();
+                document.getElementById('ai-greeting').innerText = `Olá, ${me}! Queres publicar algo novo hoje?`;
+                initCam();
+                renderFeed();
             }
         };
 
-        function login() {
-            const u = document.getElementById('u-user').value.trim();
-            if(!u) return;
-            if(!users.includes(u)) users.push(u);
-            localStorage.setItem('cv_users', JSON.stringify(users));
-            localStorage.setItem('cv_me', u);
-            location.reload();
+        function toggleAuth() {
+            isLogin = !isLogin;
+            document.getElementById('auth-title').innerText = isLogin ? "Iniciar sessão" : "Criar conta";
+            document.getElementById('auth-desc').innerText = isLogin ? "Use sua conta única Cervantes" : "Escolha um nome de utilizador exclusivo";
+            document.getElementById('auth-toggle').innerText = isLogin ? "Criar conta" : "Já tenho conta";
         }
 
-        function renderUsers() {
-            const container = document.getElementById('user-list');
-            container.innerHTML = "";
-            users.forEach(u => {
-                if(u === me) return;
-                container.innerHTML += `
-                    <div onclick="openChat('${u}')" style="background:var(--card); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; align-items:center; gap:15px; cursor:pointer;">
-                        <div style="width:40px; height:40px; border-radius:50%; background:var(--gold); color:black; display:grid; place-items:center; font-weight:bold;">${u[0]}</div>
-                        <strong>@${u}</strong>
-                    </div>`;
-            });
-        }
+        function handleAuth() {
+            const user = document.getElementById('auth-user').value.trim().toLowerCase();
+            if(!user) return;
 
-        function openChat(user) {
-            activePartner = user;
-            document.getElementById('chat-window').style.display = 'flex';
-            document.getElementById('c-name').innerText = "@" + user;
-            document.getElementById('c-avatar').innerText = user[0];
-            renderMsgs();
-        }
-
-        function closeChat() { document.getElementById('chat-window').style.display = 'none'; }
-
-        function send() {
-            const input = document.getElementById('chat-in');
-            if(!input.value.trim()) return;
-            const id = [me, activePartner].sort().join('_');
-            if(!chats[id]) chats[id] = [];
-            chats[id].push({ sender: me, text: input.value });
-            localStorage.setItem('cv_chats', JSON.stringify(chats));
-            input.value = "";
-            renderMsgs();
-        }
-
-        function renderMsgs() {
-            const box = document.getElementById('chat-box');
-            const id = [me, activePartner].sort().join('_');
-            box.innerHTML = "";
-            if(chats[id]) {
-                chats[id].forEach(m => {
-                    const side = m.sender === me ? 'sent' : 'received';
-                    box.innerHTML += `<div class="bubble ${side}">${m.text}</div>`;
-                });
-            }
-            box.scrollTop = box.scrollHeight;
-        }
-
-        // CHAMADAS DE VOZ E VÍDEO
-        async function startCall(type) {
-            document.getElementById('call-ui').style.display = 'flex';
-            document.getElementById('call-partner-name').innerText = activePartner;
-            document.getElementById('call-partner-avatar').innerText = activePartner[0];
-            document.getElementById('call-status').innerText = type === 'video' ? "Chamada de vídeo..." : "Chamada de voz...";
-            
-            if(type === 'video') {
-                try {
-                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                    document.getElementById('local-video').srcObject = stream;
-                    document.getElementById('local-video').style.display = 'block';
-                } catch (e) {
-                    console.log("Câmara bloqueada ou não encontrada.");
-                }
+            if(isLogin) {
+                if(users.includes(user)) {
+                    localStorage.setItem('cv_me', user);
+                    location.reload();
+                } else alert("Utilizador não encontrado!");
             } else {
-                document.getElementById('local-video').style.display = 'none';
+                if(users.includes(user)) alert("Este nome já está em uso! Escolha outro.");
+                else {
+                    users.push(user);
+                    localStorage.setItem('cv_users', JSON.stringify(users));
+                    localStorage.setItem('cv_me', user);
+                    location.reload();
+                }
             }
         }
 
-        function endCall() {
-            if(stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-            document.getElementById('call-ui').style.display = 'none';
-            document.getElementById('local-video').srcObject = null;
+        async function initCam() {
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({video: true});
+                document.getElementById('cam-pro').srcObject = s;
+            } catch(e) {}
         }
 
         function tab(id, el) {
@@ -214,10 +179,37 @@
             document.querySelectorAll('nav i').forEach(i => i.classList.remove('active'));
             document.getElementById(id).classList.add('active-page');
             el.classList.add('active');
-            if(id === 'inbox') renderUsers(); // Reaproveita a lista para o inbox
+            if(id === 'chats') renderChats();
         }
 
-        function logout() { localStorage.removeItem('cv_me'); location.reload(); }
+        function renderFeed() {
+            const feed = document.getElementById('feed-render');
+            feed.innerHTML = `
+                <div style="background:var(--card); padding:15px; border-radius:15px; margin-top:20px;">
+                    <strong>@CervantesAI</strong> <span class="ai-badge">PRO</span>
+                    <p>O mercado de ações subiu 2% hoje. Queres que eu invista parte do teu saldo Cervantes Pay?</p>
+                    <button style="background:var(--ai-purple); border:none; color:white; padding:8px 15px; border-radius:5px;">Analisar Investimento</button>
+                </div>
+            `;
+        }
+
+        function renderChats() {
+            const list = document.getElementById('chat-list');
+            list.innerHTML = `
+                <div style="display:flex; gap:15px; padding:20px; border-bottom:1px solid #111; background: rgba(142, 45, 226, 0.05);">
+                    <div style="width:50px; height:50px; border-radius:50%; background:var(--ai-purple); display:grid; place-items:center;">🤖</div>
+                    <div><strong>Cervantes AI Assistant</strong><br><small style="color:var(--ai-purple)">Sempre disponível</small></div>
+                </div>
+            `;
+            users.forEach(u => {
+                if(u === me) return;
+                list.innerHTML += `
+                    <div style="display:flex; gap:15px; padding:20px; border-bottom:1px solid #111;">
+                        <div style="width:50px; height:50px; border-radius:50%; background:#333; display:grid; place-items:center;">${u[0].toUpperCase()}</div>
+                        <div><strong>${u}</strong><br><small style="opacity:0.5">Visto recentemente</small></div>
+                    </div>`;
+            });
+        }
     </script>
 </body>
 </html>
