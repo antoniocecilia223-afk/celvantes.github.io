@@ -7,278 +7,206 @@
     <style>
         :root { 
             --gold: #d4af37; --bg: #000; --card: #121212; --text: #fff; 
-            --blue: #0095f6; --wa-green: #00a884; --wa-dark: #202c33; 
+            --blue: #0095f6; --wa-green: #00a884; --red: #ff3b30;
         }
         
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; height: 100vh; overflow: hidden; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
 
-        /* SELO VERIFICADO */
+        /* ESTILOS BASE */
         .badge { background: var(--blue); color: white; border-radius: 50%; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; margin-left: 4px; vertical-align: middle; border: 1px solid #000; font-weight: bold; }
-
-        /* NOTIFICAÇÃO PUSH */
-        #push-notif { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #1c1c1c; padding: 15px; border-radius: 20px; border: 1px solid #333; display: flex; align-items: center; gap: 12px; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 11000; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
-        #push-notif.show { top: 20px; }
-
-        /* BARRA ADMIN */
-        #admin-bar { background: var(--gold); color: #000; padding: 8px 15px; font-size: 0.8rem; font-weight: bold; display: none; justify-content: space-between; position: sticky; top: 0; z-index: 9999; box-shadow: 0 2px 10px rgba(212,175,55,0.3); }
-
-        /* AUTH GATE */
-        #auth-gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; background-image: radial-gradient(circle at center, #111 0%, #000 100%); }
-        .auth-box { background: rgba(18,18,18,0.8); backdrop-filter: blur(10px); padding: 40px; border-radius: 25px; border: 1px solid #333; width: 320px; text-align: center; }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 12px; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--blue); }
-        .btn-auth { background: var(--blue); color: #fff; border: none; padding: 14px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #121212; border: 1px solid #333; color: #fff; border-radius: 12px; outline: none; box-sizing: border-box; }
 
         /* LAYOUT PRINCIPAL */
         .app-container { display: flex; height: 100vh; }
-        nav { width: 80px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 35px; background: #000; flex-shrink: 0; }
-        nav i { font-style: normal; font-size: 1.8rem; cursor: pointer; opacity: 0.3; transition: 0.3s; }
-        nav i.active { opacity: 1; color: var(--gold); transform: scale(1.15); }
+        nav { width: 70px; border-right: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 25px 0; gap: 30px; background: #000; }
+        nav i { font-style: normal; font-size: 1.6rem; cursor: pointer; opacity: 0.4; transition: 0.3s; }
+        nav i.active { opacity: 1; color: var(--gold); transform: scale(1.2); }
 
-        main { flex: 1; overflow-y: auto; padding-bottom: 100px; scroll-behavior: smooth; }
-        .page { display: none; padding: 25px; animation: slideUp 0.4s ease; }
+        main { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
         .active-page { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* SISTEMA DE FEED */
-        .yt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .insta-stack { max-width: 500px; margin: 0 auto; }
-        .post-card { background: var(--card); border-radius: 20px; margin-bottom: 30px; border: 1px solid #262626; overflow: hidden; }
-        .media-content { width: 100%; background: #000; display: block; object-fit: cover; max-height: 500px; }
-
-        /* INTERFACE DE CHAT */
-        #chat-ui { position: fixed; inset: 0; background: #0b141a; z-index: 9000; display: none; flex-direction: column; }
-        .chat-header { background: #202c33; padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #333; }
-        .chat-body { flex: 1; overflow-y: auto; padding: 20px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-attachment: fixed; display: flex; flex-direction: column; gap: 10px; }
-        .bubble { padding: 12px 16px; border-radius: 15px; max-width: 75%; font-size: 0.95rem; position: relative; color: white; }
+        /* CHAT E MENSAGENS */
+        #chat-window { position: fixed; inset: 0; background: #0b141a; z-index: 9000; display: none; flex-direction: column; }
+        .chat-header { background: #202c33; padding: 12px 18px; display: flex; align-items: center; gap: 12px; }
+        .chat-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
+        .bubble { padding: 10px 14px; border-radius: 15px; max-width: 70%; font-size: 0.9rem; }
         .sent { background: #005c4b; align-self: flex-end; border-bottom-right-radius: 2px; }
         .received { background: #202c33; align-self: flex-start; border-bottom-left-radius: 2px; }
+
+        /* INTERFACE DE CHAMADA (CALL) */
+        #call-ui { position: fixed; inset: 0; background: #121212; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: space-around; padding: 50px 0; }
+        #local-video { position: absolute; top: 20px; right: 20px; width: 100px; height: 150px; background: #000; border-radius: 10px; object-fit: cover; border: 2px solid var(--gold); transform: scaleX(-1); }
+        .call-avatar { width: 120px; height: 120px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; font-size: 3rem; color: #000; font-weight: bold; margin-bottom: 20px; }
+        .call-actions { display: flex; gap: 30px; }
+        .call-btn { width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer; display: grid; place-items: center; font-size: 1.5rem; color: white; }
+        .btn-hangup { background: var(--red); }
+        .btn-accept { background: var(--wa-green); }
+
+        /* LOGIN */
+        #auth-gate { position: fixed; inset: 0; background: #000; z-index: 11000; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <audio id="snd-pling" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
-    <div id="push-notif">
-        <div style="width:45px; height:45px; border-radius:50%; background:var(--blue); color:white; display:grid; place-items:center; font-weight:bold; font-size:20px;">✓</div>
-        <div style="flex:1">
-            <strong id="p-user">@Admin</strong> <span class="badge">✓</span><br>
-            <span id="p-text" style="font-size:0.85rem; opacity:0.7">Sistema iniciado</span>
-        </div>
-    </div>
-
-    <div id="admin-bar">
-        <span>👑 MASTER ADMIN: From_celta.5 <span class="badge">✓</span></span>
-        <span id="u-count">Utilizadores: 0</span>
-    </div>
-
     <div id="auth-gate">
-        <div class="auth-box">
-            <h1 style="color:var(--gold); font-size: 2.8rem; margin:0; letter-spacing:-2px;">Cervantes</h1>
-            <p style="opacity:0.5; margin-bottom:20px;">Rede Real v12</p>
-            <input type="text" id="u-in" placeholder="Teu nome de utilizador">
-            <button class="btn-auth" onclick="login()">Entrar / Registar</button>
+        <div style="text-align: center; width: 300px;">
+            <h1 style="color:var(--gold); font-size: 3rem; margin-bottom: 5px;">Cervantes</h1>
+            <p style="opacity:0.5; margin-bottom: 30px;">Rede Real v15</p>
+            <input type="text" id="u-user" placeholder="Como te chamas?">
+            <button onclick="login()" style="width:100%; padding:15px; background:var(--blue); border:none; color:white; border-radius:12px; font-weight:bold; cursor:pointer;">ENTRAR</button>
         </div>
     </div>
 
     <div class="app-container">
         <nav>
             <i class="active" onclick="tab('home', this)">🏠</i>
-            <i onclick="tab('search', this)">🔍</i>
-            <i onclick="tab('studio', this)">➕</i>
-            <i onclick="tab('chats', this)">💬</i>
+            <i onclick="tab('inbox', this)">💬</i>
             <i onclick="tab('settings', this)">⚙️</i>
         </nav>
-
         <main>
             <section id="home" class="page active-page">
-                <div id="feed-render"></div>
+                <h2>Explorar</h2>
+                <div id="user-list"></div>
             </section>
-
-            <section id="search" class="page">
-                <input type="text" id="s-bar" placeholder="Pesquisar @utilizador..." onkeyup="doSearch()">
-                <div id="s-results" style="margin-top:20px;"></div>
+            <section id="inbox" class="page">
+                <h2>Mensagens Privadas</h2>
+                <div id="chat-list"></div>
             </section>
-
-            <section id="studio" class="page">
-                <h2>Cervantes Studio</h2>
-                <textarea id="post-txt" placeholder="O que queres partilhar?" style="width:100%; height:120px; background:#121212; border:1px solid #333; color:white; border-radius:15px; padding:15px; outline:none; resize:none;"></textarea>
-                <input type="file" id="post-file" accept="image/*,video/*" hidden>
-                <button class="btn-auth" style="background:#fff; color:#000;" onclick="document.getElementById('post-file').click()">📸 Adicionar Mídia</button>
-                <button class="btn-auth" style="background:var(--gold); color:#000;" onclick="publish()">PUBLICAR NO FEED</button>
-            </section>
-
-            <section id="chats" class="page">
-                <h2>Conversas</h2>
-                <div id="inbox-list"></div>
-            </section>
-
             <section id="settings" class="page">
                 <h2>Definições</h2>
-                <div style="background:var(--card); padding:20px; border-radius:20px;">
-                    <p>Modo de Visualização do Feed</p>
-                    <select id="f-style" onchange="renderFeed()" style="width:100%; padding:12px; background:#000; color:white; border:1px solid #333; border-radius:10px;">
-                        <option value="insta-stack">Instagram (Vertical)</option>
-                        <option value="yt-grid">YouTube (Grelha)</option>
-                    </select>
-                    <button onclick="logout()" style="margin-top:40px; background:#ff3b30; border:none; color:white; padding:15px; width:100%; border-radius:12px; font-weight:bold; cursor:pointer;">TERMINAR SESSÃO</button>
-                </div>
+                <button onclick="logout()" style="color:var(--red); background:none; border:none; font-weight:bold; cursor:pointer;">Sair da Conta</button>
             </section>
         </main>
     </div>
 
-    <div id="chat-ui">
+    <div id="chat-window">
         <div class="chat-header">
-            <span onclick="closeChat()" style="cursor:pointer; font-size:1.5rem;">←</span>
-            <div style="width:40px; height:40px; border-radius:50%; background:var(--gold); display:grid; place-items:center; color:#000; font-weight:bold;" id="c-avatar">?</div>
-            <strong id="c-name">Nome</strong>
-            <div style="margin-left:auto; display:flex; gap:20px; font-size:1.2rem;"><span>📞</span><span>🎥</span></div>
+            <span onclick="closeChat()" style="cursor:pointer; font-size:1.2rem;">←</span>
+            <div id="c-avatar" style="width:35px; height:35px; border-radius:50%; background:var(--gold); color:black; display:grid; place-items:center; font-weight:bold;">?</div>
+            <strong id="c-name" style="flex:1;">Nome</strong>
+            <div style="display:flex; gap:15px; font-size:1.3rem;">
+                <span onclick="startCall('audio')" style="cursor:pointer;">📞</span>
+                <span onclick="startCall('video')" style="cursor:pointer;">🎥</span>
+            </div>
         </div>
-        <div class="chat-body" id="c-box"></div>
-        <div style="padding:15px; background:#202c33; display:flex; gap:10px;">
-            <input type="text" id="c-in" placeholder="Escreve uma mensagem..." style="margin:0; flex:1">
-            <button onclick="sendMsg()" style="width:50px; height:50px; border-radius:50%; background:var(--wa-green); border:none; color:white; font-size:1.2rem; cursor:pointer;">➤</button>
+        <div class="chat-content" id="chat-box"></div>
+        <div style="padding:15px; display:flex; gap:10px; background:#1c1c1c;">
+            <input type="text" id="chat-in" placeholder="Escreve aqui..." style="margin:0; flex:1;">
+            <button onclick="send()" style="background:var(--wa-green); border:none; color:white; border-radius:50%; width:45px; height:45px;">➤</button>
+        </div>
+    </div>
+
+    <div id="call-ui">
+        <video id="local-video" autoplay playsinline muted></video>
+        <div style="text-align:center;">
+            <div class="call-avatar" id="call-partner-avatar">?</div>
+            <h2 id="call-partner-name">Nome</h2>
+            <p id="call-status">A chamar...</p>
+        </div>
+        <div class="call-actions">
+            <button class="call-btn btn-hangup" onclick="endCall()">✖</button>
+            <button class="call-btn btn-accept" id="btn-answer" style="display:none;" onclick="acceptCall()">✔</button>
         </div>
     </div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('cv_users') || '["From_celta.5"]');
-        let posts = JSON.parse(localStorage.getItem('cv_posts') || '[]');
-        let chats = JSON.parse(localStorage.getItem('cv_chats') || '{}');
         let me = localStorage.getItem('cv_me');
+        let users = JSON.parse(localStorage.getItem('cv_users') || '["Admin", "From_celta.5"]');
+        let chats = JSON.parse(localStorage.getItem('cv_chats') || '{}');
+        let activePartner = "";
+        let stream = null;
 
         window.onload = () => {
             if(me) {
                 document.getElementById('auth-gate').style.display = 'none';
-                if(me === "From_celta.5") {
-                    document.getElementById('admin-bar').style.display = 'flex';
-                    document.getElementById('u-count').innerText = "Utilizadores: " + users.length;
-                    setTimeout(() => notify("SISTEMA", "Acesso Master Verificado 🔵"), 1000);
-                }
-                renderFeed();
-                loadInbox();
+                renderUsers();
             }
         };
 
         function login() {
-            const val = document.getElementById('u-in').value.trim();
-            if(!val) return;
-            if(!users.includes(val)) {
-                users.push(val);
-                localStorage.setItem('cv_users', JSON.stringify(users));
-            }
-            localStorage.setItem('cv_me', val);
+            const u = document.getElementById('u-user').value.trim();
+            if(!u) return;
+            if(!users.includes(u)) users.push(u);
+            localStorage.setItem('cv_users', JSON.stringify(users));
+            localStorage.setItem('cv_me', u);
             location.reload();
         }
 
-        function notify(user, text) {
-            const snd = document.getElementById('snd-pling');
-            snd.play().catch(()=>{}); 
-            document.getElementById('p-user').innerText = "@" + user;
-            document.getElementById('p-text').innerText = text;
-            const n = document.getElementById('push-notif');
-            n.classList.add('show');
-            setTimeout(() => n.classList.remove('show'), 4000);
-        }
-
-        function publish() {
-            const txt = document.getElementById('post-txt').value;
-            const file = document.getElementById('post-file').files[0];
-            if(!txt && !file) return;
-
-            const save = (media) => {
-                const p = { author: me, text: txt, media: media, date: new Date().toLocaleString(), id: Date.now() };
-                posts.unshift(p);
-                localStorage.setItem('cv_posts', JSON.stringify(posts));
-                document.getElementById('post-txt').value = "";
-                document.getElementById('post-file').value = "";
-                tab('home', document.querySelector('nav i'));
-                renderFeed();
-            };
-
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => save(e.target.result);
-                reader.readAsDataURL(file);
-            } else { save(null); }
-        }
-
-        function renderFeed() {
-            const container = document.getElementById('feed-render');
-            const style = document.getElementById('f-style').value;
-            container.className = style;
-            container.innerHTML = posts.length ? "" : "<p style='text-align:center; opacity:0.3; margin-top:50px;'>Ainda não há publicações.</p>";
-
-            posts.forEach(p => {
-                const isV = p.author === "From_celta.5" ? '<span class="badge">✓</span>' : '';
-                const mediaTag = p.media ? (p.media.includes('video') || p.media.includes('mp4') ? 
-                    `<video src="${p.media}" controls class="media-content"></video>` : 
-                    `<img src="${p.media}" class="media-content">`) : '';
-                
+        function renderUsers() {
+            const container = document.getElementById('user-list');
+            container.innerHTML = "";
+            users.forEach(u => {
+                if(u === me) return;
                 container.innerHTML += `
-                    <div class="post-card">
-                        <div style="padding:15px; font-weight:bold; display:flex; align-items:center;">
-                            <div style="width:30px; height:30px; border-radius:50%; background:var(--gold); color:#000; display:grid; place-items:center; margin-right:10px; font-size:0.8rem;">${p.author[0].toUpperCase()}</div>
-                            @${p.author}${isV}
-                        </div>
-                        ${mediaTag}
-                        <div style="padding:15px;">
-                            <p style="margin:0 0 10px 0;">${p.text}</p>
-                            <small style="opacity:0.4; font-size:0.7rem;">${p.date}</small>
-                        </div>
+                    <div onclick="openChat('${u}')" style="background:var(--card); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; align-items:center; gap:15px; cursor:pointer;">
+                        <div style="width:40px; height:40px; border-radius:50%; background:var(--gold); color:black; display:grid; place-items:center; font-weight:bold;">${u[0]}</div>
+                        <strong>@${u}</strong>
                     </div>`;
             });
         }
 
-        let partner = "";
-        function openChat(name) {
-            partner = name;
-            document.getElementById('chat-ui').style.display = 'flex';
-            document.getElementById('c-name').innerHTML = "@" + name + (name === "From_celta.5" ? ' <span class="badge">✓</span>' : '');
-            document.getElementById('c-avatar').innerText = name[0].toUpperCase();
+        function openChat(user) {
+            activePartner = user;
+            document.getElementById('chat-window').style.display = 'flex';
+            document.getElementById('c-name').innerText = "@" + user;
+            document.getElementById('c-avatar').innerText = user[0];
             renderMsgs();
         }
 
-        function closeChat() { document.getElementById('chat-ui').style.display = 'none'; }
+        function closeChat() { document.getElementById('chat-window').style.display = 'none'; }
 
-        function sendMsg() {
-            const input = document.getElementById('c-in');
-            if(!input.value) return;
-            const id = [me, partner].sort().join('_');
+        function send() {
+            const input = document.getElementById('chat-in');
+            if(!input.value.trim()) return;
+            const id = [me, activePartner].sort().join('_');
             if(!chats[id]) chats[id] = [];
-            chats[id].push({ sender: me, text: input.value, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) });
+            chats[id].push({ sender: me, text: input.value });
             localStorage.setItem('cv_chats', JSON.stringify(chats));
             input.value = "";
             renderMsgs();
         }
 
         function renderMsgs() {
-            const box = document.getElementById('c-box');
-            const id = [me, partner].sort().join('_');
+            const box = document.getElementById('chat-box');
+            const id = [me, activePartner].sort().join('_');
             box.innerHTML = "";
             if(chats[id]) {
                 chats[id].forEach(m => {
                     const side = m.sender === me ? 'sent' : 'received';
-                    box.innerHTML += `<div class="bubble ${side}">${m.text}<div style="font-size:0.6rem; opacity:0.5; margin-top:5px; text-align:right;">${m.time}</div></div>`;
+                    box.innerHTML += `<div class="bubble ${side}">${m.text}</div>`;
                 });
             }
             box.scrollTop = box.scrollHeight;
         }
 
-        function doSearch() {
-            const q = document.getElementById('s-bar').value.toLowerCase();
-            const res = document.getElementById('s-results');
-            res.innerHTML = "";
-            if(!q) return;
-            users.forEach(u => {
-                if(u.toLowerCase().includes(q) && u !== me) {
-                    const isV = u === "From_celta.5" ? '<span class="badge">✓</span>' : '';
-                    res.innerHTML += `<div style="padding:15px; background:var(--card); border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                        <span>@${u}${isV}</span>
-                        <button onclick="openChat('${u}')" style="background:var(--blue); border:none; color:white; padding:8px 15px; border-radius:10px; cursor:pointer; font-weight:bold;">Mensagem</button>
-                    </div>`;
+        // CHAMADAS DE VOZ E VÍDEO
+        async function startCall(type) {
+            document.getElementById('call-ui').style.display = 'flex';
+            document.getElementById('call-partner-name').innerText = activePartner;
+            document.getElementById('call-partner-avatar').innerText = activePartner[0];
+            document.getElementById('call-status').innerText = type === 'video' ? "Chamada de vídeo..." : "Chamada de voz...";
+            
+            if(type === 'video') {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    document.getElementById('local-video').srcObject = stream;
+                    document.getElementById('local-video').style.display = 'block';
+                } catch (e) {
+                    console.log("Câmara bloqueada ou não encontrada.");
                 }
-            });
+            } else {
+                document.getElementById('local-video').style.display = 'none';
+            }
+        }
+
+        function endCall() {
+            if(stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            document.getElementById('call-ui').style.display = 'none';
+            document.getElementById('local-video').srcObject = null;
         }
 
         function tab(id, el) {
@@ -286,24 +214,7 @@
             document.querySelectorAll('nav i').forEach(i => i.classList.remove('active'));
             document.getElementById(id).classList.add('active-page');
             el.classList.add('active');
-            if(id === 'chats') loadInbox();
-        }
-
-        function loadInbox() {
-            const inbox = document.getElementById('inbox-list');
-            inbox.innerHTML = "";
-            let hasChat = false;
-            users.forEach(u => {
-                if(u !== me) {
-                    hasChat = true;
-                    const isV = u === "From_celta.5" ? '<span class="badge">✓</span>' : '';
-                    inbox.innerHTML += `<div onclick="openChat('${u}')" style="padding:15px; background:var(--card); margin-bottom:10px; border-radius:15px; cursor:pointer; display:flex; align-items:center; gap:10px;">
-                        <div style="width:35px; height:35px; border-radius:50%; background:var(--gold); color:black; display:grid; place-items:center; font-weight:bold;">${u[0].toUpperCase()}</div>
-                        @${u}${isV}
-                    </div>`;
-                }
-            });
-            if(!hasChat) inbox.innerHTML = "<p style='opacity:0.3'>Nenhum utilizador encontrado.</p>";
+            if(id === 'inbox') renderUsers(); // Reaproveita a lista para o inbox
         }
 
         function logout() { localStorage.removeItem('cv_me'); location.reload(); }
